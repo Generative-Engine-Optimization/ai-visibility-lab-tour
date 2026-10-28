@@ -1,0 +1,4 @@
+# Cloudflare Pages: reindirizzamenti permanenti.
+# La tappa di Pistoia si chiamava San Marcello: il vecchio indirizzo porta alla pagina nuova.
+/tappe/san-marcello   /tappe/pistoia/   301
+/tappe/san-marcello/  /tappe/pistoia/   301

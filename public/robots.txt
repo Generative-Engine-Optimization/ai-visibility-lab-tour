@@ -1,0 +1,24 @@
+# lab.rankwit.ai
+# Tutte le pagine sono aperte ai motori di ricerca e agli assistenti AI.
+# Le pagine delle tappe senza data (data e sede da definire) hanno <meta name="robots" content="noindex"> e non sono nella sitemap.
+
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Assistenti AI e motori di risposta: accesso consentito, come per gli altri crawler.
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: CCBot
+Allow: /
+Disallow: /api/
+
+Sitemap: https://lab.rankwit.ai/sitemap-index.xml
