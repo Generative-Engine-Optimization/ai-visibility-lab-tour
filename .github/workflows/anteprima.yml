@@ -1,0 +1,45 @@
+# Anteprima del sito su GitHub Pages (https://gherybeans-rankwit.github.io/ai-visibility-lab-tour/).
+# Si aggiorna a ogni modifica su main e una volta al giorno (così lo stato delle tappe resta giusto).
+# Serve solo per vedere il sito prima della pubblicazione: lab.rankwit.ai non dipende da questo file.
+# Requisito: Settings → Pages → Build and deployment → Source: "GitHub Actions".
+name: Anteprima
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build:anteprima
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
