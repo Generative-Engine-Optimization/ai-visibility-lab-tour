@@ -1,0 +1,91 @@
+---
+/* Struttura comune a tutte le pagine: testa con SEO e dati strutturati, testata, contenuto, footer. */
+import "../styles/tour.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITO, TAPPE, ALIAS, oggiRoma } from "../lib/tour.js";
+import { grafo } from "../lib/seo.js";
+import { ANTEPRIMA } from "../lib/url.js";
+
+const {
+  titolo,             /* <title>, massimo ~60 caratteri */
+  descrizione,        /* meta description, ~150 caratteri */
+  path,               /* percorso della pagina sul sito vero, es. "/tappe/pistoia/" */
+  immagine = "/og/tour.png",
+  noindex = false,
+  jsonld = [],
+  attuale = "",
+  home = false
+} = Astro.props;
+
+const canonico = SITO + path;
+const og = SITO + immagine;
+const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
+const idTappe = TAPPE.map((t) => t.id);
+---
+<!doctype html>
+<html lang="it" data-base={base} data-oggi={oggiRoma()}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script is:inline>document.documentElement.classList.add("js")</script>
+<title>{titolo}</title>
+<meta name="description" content={descrizione}>
+<link rel="canonical" href={canonico}>
+{(noindex || ANTEPRIMA) && <meta name="robots" content="noindex, follow">}
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#1B0B3A">
+<link rel="icon" href="https://lab.rankwit.ai/assets/rankwit-symbol.png">
+{!ANTEPRIMA && <link rel="sitemap" href="/sitemap-index.xml">}
+<meta property="og:type" content="website">
+<meta property="og:locale" content="it_IT">
+<meta property="og:site_name" content="AI Visibility Lab · RankWit AI">
+<meta property="og:title" content={titolo}>
+<meta property="og:description" content={descrizione}>
+<meta property="og:url" content={canonico}>
+<meta property="og:image" content={og}>
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={titolo}>
+<meta name="twitter:description" content={descrizione}>
+<meta name="twitter:image" content={og}>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,400..800;1,400..800&family=Inter:wght@400;500;600&display=swap">
+{jsonld.length > 0 && <script type="application/ld+json" is:inline set:html={grafo(jsonld)} />}
+{home && (
+  /* vecchi link della pagina unica (#pistoia, #hotel...): portano alle pagine nuove */
+  <script is:inline define:vars={{ base, idTappe, ALIAS }}>
+    (function(){
+      var h = location.hash.slice(1); if (!h) return;
+      if (h === "hotel" || h === "destinations"){ location.replace(base + "/" + h + "/" + location.search); return; }
+      var id = ALIAS[h] || h;
+      if (idTappe.indexOf(id) >= 0) location.replace(base + "/tappe/" + id + "/" + location.search);
+    })();
+  </script>
+)}
+{!ANTEPRIMA && (
+  /* Tracciamento: gli stessi strumenti del sito attuale (Google Tag Manager, Google Analytics 4, Microsoft Clarity).
+     Si attiva solo su lab.rankwit.ai. Il pixel di Meta lo carica Tag Manager. */
+  <script is:inline>
+    (function(){
+      if (location.hostname !== "lab.rankwit.ai") return;
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PN8TJ9QX');
+      var g = document.createElement('script'); g.async = true; g.src = 'https://www.googletagmanager.com/gtag/js?id=G-3B6T2Q6QEW'; document.head.appendChild(g);
+      window.dataLayer = window.dataLayer || []; window.gtag = function(){ window.dataLayer.push(arguments); }; window.gtag('js', new Date()); window.gtag('config', 'G-3B6T2Q6QEW');
+      (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","y0sqnp0606");
+    })();
+  </script>
+)}
+</head>
+<body>
+{!ANTEPRIMA && <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PN8TJ9QX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>}
+<Header attuale={attuale} />
+<slot />
+<Footer />
+<script>
+  import "../scripts/tour.js";
+</script>
+</body>
+</html>
