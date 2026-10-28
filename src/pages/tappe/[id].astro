@@ -1,0 +1,173 @@
+---
+/* Pagina di ogni tappa: /tappe/firenze/, /tappe/pistoia/...
+   - Tappe con programma (intro, sede, agenda): pagina completa.
+   - Tappe senza programma: pagina "Informazioni disponibili a breve" con il modulo Avvisami.
+   - Tappe senza data: pagina non indicizzata (resta raggiungibile dalla mappa e dal tabellone).
+   Le parti che cambiano con la data (stato, testi, modulo) sono scritte solo come sono il giorno della
+   costruzione; se nel frattempo la tappa si è conclusa, il browser le riscrive (src/lab/scripts/tour.js). */
+import Base from "../../lab/layouts/Base.astro";
+import MapTour from "../../lab/components/MapTour.astro";
+import FormAvvisami from "../../lab/components/FormAvvisami.astro";
+import { TAPPE, BY, SITO, stati, oggiRoma, testiAttesa, fraseTappa, doveTappa, titoloMateriali, completa, indicizzabile, dove } from "../../lab/lib/tour.js";
+import { SESSIONI, PREVISTO } from "../../lab/lib/contenuti.js";
+import { LOGHI } from "../../lab/lib/loghi.js";
+import { u } from "../../lab/lib/url.js";
+import { ORGANIZZAZIONE, SITO_WEB, TOUR_ID, pagina, briciole, eventoTappa, serie, metaTappa } from "../../lab/lib/seo.js";
+import { ogTappa } from "../../lab/lib/og.js";
+
+export const prerender = true;
+export function getStaticPaths(){
+  return TAPPE.map((t) => ({ params: { id: t.id } }));
+}
+
+const t = BY[Astro.params.id];
+const oggi = oggiRoma();
+const s = stati(oggi);
+const i = TAPPE.indexOf(t), prev = TAPPE[i - 1], next = TAPPE[i + 1];
+const passata = s.isPast(t);
+const piena = completa(t);
+const path = "/tappe/" + t.id + "/";
+const nome = "AI Visibility Lab " + dove(t);
+const titolo = nome + (t.dataISO ? ", " + t.data : ": prossimamente");
+const descrizione = metaTappa(t);
+const og = ogTappa(t.id);
+const colore = passata ? "var(--lilac)" : "var(--mint)";
+const attesa = testiAttesa(t, s);
+/* modulo della pagina: per una tappa conclusa senza programma si chiede la prossima */
+const cittaModulo = piena ? t.citta : (passata ? (s.NEXT ? s.NEXT.citta : "") : t.citta);
+const titoloModulo = cittaModulo ? "Avvisami per " + cittaModulo : "Avvisami per le prossime tappe";
+
+const jsonld = [
+  ORGANIZZAZIONE,
+  SITO_WEB,
+  Object.assign(pagina({ path, titolo, descrizione, immagine: SITO + og }), {
+    breadcrumb: { "@id": SITO + path + "#briciole" },
+    about: t.dataISO ? { "@id": SITO + path + "#evento" } : { "@id": TOUR_ID }
+  }),
+  Object.assign(briciole([{ nome: "AI Visibility Lab", path: "/" }, { nome, path }]), { "@id": SITO + path + "#briciole" }),
+  serie(TAPPE)
+];
+if (t.dataISO) jsonld.push(eventoTappa(t));
+
+const facts = piena
+  ? [["Quando", t.data + ", " + t.orario], ["Dove", t.sede], ["Formato", t.formato], ["Posti", t.posti + (t.postiNota ? ", " + t.postiNota : "")], ["Costo", t.costo]]
+  : [["Quando", t.dataISO ? t.data : "Data da definire"],
+     ["Dove", doveTappa(t, s)],
+     ["Organizzazione", "RankWit AI" + (t.collab ? " con " + t.collab : "")]];
+const logo = (n) => ({ src: u("/assets/loghi/" + n + ".webp"), width: LOGHI[n][0], height: LOGHI[n][1] });
+---
+<Base titolo={titolo} descrizione={descrizione} path={path} immagine={og} jsonld={jsonld} noindex={!indicizzabile(t)}>
+<main id="tappa-view" data-tappa={t.id}>
+  <section class="t-hero on-night"><div class="wrap">
+    <a class="back" href={u("/#tappe")}><span aria-hidden="true">←</span> Tutte le tappe</a>
+    <div class="t-grid">
+      <div>
+        <div class="t-label"><span class="eyebrow">{piena ? "Tappa " + String(i + 1).padStart(2, "0") : "AI Visibility Lab"}</span><span class="st-pill" data-pill style={`color:${colore}`}>{s.label(t)}</span></div>
+        <h1 class:list={["t-city", { outline: !passata }]}><span class="sr-only">AI Visibility Lab {t.prep || "a"} </span>{t.citta}</h1>
+        {piena
+          ? <p class="t-ed">AI Visibility Lab · {t.edizione}</p>
+          : t.collab && <p class="t-ed">In collaborazione con {t.collab}</p>}
+        <p class="t-coord tab">{t.coord}</p>
+        {!piena && (
+          <>
+            <p class="t-soon" data-attesa="titolo">{attesa.titolo}</p>
+            <p class="t-soon-text" data-attesa="testo">{attesa.testo}</p>
+            <div class="t-cta"><a class="btn btn-light" href="#tappa-form" id="t-avvisami">Avvisami <span class="arr" aria-hidden="true">→</span></a></div>
+          </>
+        )}
+      </div>
+      <div class="t-map"><MapTour highlight={t.id} label={"Posizione di " + t.citta + " sulla mappa delle tappe"} /></div>
+    </div>
+    <dl class:list={["t-facts", { n3: !piena }]}>
+      {facts.map(([k, v]) => <div><dt>{k}</dt><dd data-dove={!piena && k === "Dove" ? "" : undefined}>{v}</dd></div>)}
+    </dl>
+  </div></section>
+
+  <section class="band"><div class="wrap">
+    {piena ? (
+      <div class="t-body">
+        <div class="t-main">
+          <section><p class="eyebrow">La tappa</p><h2>{t.edizione}</h2><div class="prose">{t.intro.map((p) => <p>{p}</p>)}</div></section>
+          <section><p class="eyebrow">Programma</p><h2>{t.programma}</h2><ol class="agenda">
+            {t.agenda.map((a) => <li><span class="ora tab">{a.ora || "·"}</span><span class="cosa"><b>{a.t}</b>{a.d && <span>{a.d}</span>}</span></li>)}
+          </ol></section>
+          {t.porta && (
+            <section><p class="eyebrow">Materiali</p><h2 data-materiali>{titoloMateriali(t, s)}</h2>
+              <div class="takeaways">{t.porta.map((p) => <div><span class="when">{p.quando}</span><b>{p.t}</b><p>{p.p}</p><span class="tag">{p.tag}</span></div>)}</div>
+            </section>
+          )}
+          {t.partner && (
+            <section><p class="eyebrow">Partner della tappa</p><div class="t-partners">
+              {t.partner.map((p) => <div class="tp">{p.logo && <span class="tp-logo"><img {...logo(p.logo)} alt="" loading="lazy" decoding="async"></span>}<b>{p.nome}</b><small>{p.ruolo}</small></div>)}
+            </div></section>
+          )}
+        </div>
+        <aside class="t-aside">
+          {passata ? (
+            <div class="side-card">
+              <span class="st-pill">Conclusa</span>
+              <h3>Tappa conclusa il {t.data}</h3>
+              <p>Vuoi partecipare alla prossima? Lascia i tuoi dati e ti scriviamo quando apriamo le candidature.</p>
+              <a class="btn btn-primary" href={u("/#avvisami")}>Avvisami per la prossima tappa <span class="arr" aria-hidden="true">→</span></a>
+              {t.link && <a class="link" href={t.link} target="_blank" rel="noopener">Pagina dell'edizione su lab.rankwit.ai ↗</a>}
+            </div>
+          ) : (
+            <div class="side-card" data-se="futuro">
+              <span class="st-pill" data-pill>{s.label(t)}</span>
+              <h3>{t.citta}, {t.data}</h3>
+              <p>Lascia i tuoi dati e ti avvisiamo appena apriamo le candidature.</p>
+              <FormAvvisami p="side" fisso={t.citta} pagina={"tappa-" + t.id} />
+              {t.link && <a class="link" href={t.link} target="_blank" rel="noopener">Pagina dell'edizione ↗</a>}
+            </div>
+          )}
+          <div class="tbd-box"><b>Non vuoi aspettare?</b><p>Puoi richiedere un report a distanza.</p><a class="link" href="https://try.rankwit.ai/report-gratuito" target="_blank" rel="noopener">Richiedi il report ↗</a></div>
+        </aside>
+      </div>
+    ) : (
+      <div class="t-main t-solo">
+        <section><p class="eyebrow">La tappa</p><h2>{nome}</h2><div class="prose">
+          <p><span data-frase>{fraseTappa(t, s)}</span> È il tour di formazione di RankWit AI per hotel, strutture ricettive e destinazioni: si lavora su come ChatGPT, Gemini, Claude, Perplexity e Google AI Overviews descrivono le strutture e su quali nomi citano nelle risposte.</p>
+          {!passata && <p data-se="futuro">Come in ogni tappa, chi partecipa riceve un report preparato a mano sulla propria struttura: come la descrivono gli assistenti AI, quali concorrenti citano al suo posto e da dove cominciare a sistemare il sito.</p>}
+        </div></section>
+        <section><p class="eyebrow">Domanda di esempio</p><h2>«{t.domanda}»</h2><div class="prose"><p>È un esempio delle domande che gli ospiti fanno agli assistenti AI prima di scegliere un hotel {dove(t)}. Nel report ne analizziamo più di quaranta, scelte in base alla tua struttura.</p></div></section>
+        <section><p class="eyebrow">In ogni tappa</p><h2>Cosa è previsto</h2><div class="takeaways">
+          {PREVISTO.map((p) => <div><span class="when">{p.quando}</span><b>{p.t}</b><p>{p.p}</p>{p.tag && <span class="tag">{p.tag}</span>}</div>)}
+        </div></section>
+        <section><p class="eyebrow">Programma</p><h2>Gli argomenti delle sessioni</h2>
+          <div class="prose"><p>Sono gli argomenti del Lab, dal quadro generale agli strumenti pratici. Quali si affrontano, e per quanto tempo, dipende dal formato della tappa.</p></div>
+          <ol class="agenda">
+            {SESSIONI.map((x) => <li><span class="ora tab">{x.n}</span><span class="cosa"><b>{x.t}</b><span>{x.d}</span></span></li>)}
+          </ol></section>
+      </div>
+    )}
+    {piena && (
+      <nav class="t-nav" aria-label="Altre tappe">
+        {prev && <a href={u("/tappe/" + prev.id + "/")}><small>← Tappa precedente</small><b>{prev.citta}</b></a>}
+        {next ? <a class="next" href={u("/tappe/" + next.id + "/")}><small>Tappa successiva →</small><b>{next.citta}</b></a>
+              : <a class="next" href={u("/#proponi")}><small>Proponi una città →</small><b>Altre città</b></a>}
+      </nav>
+    )}
+  </div></section>
+
+  {!piena && (
+    <>
+      <section class="band band-violet on-violet" id="tappa-form"><div class="wrap"><div class="ask-grid">
+        <div class="ask-intro">
+          <p class="eyebrow">Avvisami</p>
+          <h2 class="h2" data-modulo-titolo>{titoloModulo}</h2>
+          <p class="lead">Ti scriviamo prima di aprire le candidature.</p>
+          <p class="alt">Non vuoi aspettare? <a href="https://try.rankwit.ai/report-gratuito" target="_blank" rel="noopener">Richiedi un report a distanza ↗</a></p>
+        </div>
+        <div><FormAvvisami p="side" fisso={cittaModulo} pagina={"tappa-" + t.id} /></div>
+      </div></div></section>
+      <section class="t-navband"><div class="wrap">
+        <nav class="t-nav" aria-label="Altre tappe">
+          {prev && <a href={u("/tappe/" + prev.id + "/")}><small>← Tappa precedente</small><b>{prev.citta}</b></a>}
+          {next ? <a class="next" href={u("/tappe/" + next.id + "/")}><small>Tappa successiva →</small><b>{next.citta}</b></a>
+                : <a class="next" href={u("/#proponi")}><small>Proponi una città →</small><b>Altre città</b></a>}
+        </nav>
+      </div></section>
+    </>
+  )}
+</main>
+</Base>
