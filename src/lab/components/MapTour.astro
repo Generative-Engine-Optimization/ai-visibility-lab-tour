@@ -1,0 +1,39 @@
+---
+/* Mappa delle tappe: il disegno dell'Italia è un file a parte (si scarica una volta sola),
+   sopra c'è un SVG leggero con percorso e punti. Lo stato dei punti viene aggiornato dal browser. */
+import { TAPPE, stati, oggiRoma, esc } from "../lib/tour.js";
+import { MAP_W, MAP_H } from "../lib/mappa.js";
+import { u } from "../lib/url.js";
+
+const { highlight = null, label = "Mappa delle tappe" } = Astro.props;
+const s = stati(oggiRoma());
+
+function arc(a, b, k){
+  const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1];
+  return "M" + a[0] + "," + a[1] + " Q" + (mx - dy * k).toFixed(1) + "," + (my + dx * k).toFixed(1) + " " + b[0] + "," + b[1];
+}
+/* il percorso unisce solo le tappe con una data, in ordine */
+const dated = TAPPE.filter((t) => t.dataISO);
+let svg = "";
+for (let i = 0; i < dated.length - 1; i++){
+  const a = dated[i], b = dated[i + 1];
+  const c = s.isPast(b) ? "past" : (s.isPast(a) ? "next" : "future");
+  svg += '<path class="leg ' + c + '" data-a="' + a.id + '" data-b="' + b.id + '" d="' + arc(a.pt, b.pt, (i % 2 ? -.18 : .18)) + '"/>';
+}
+TAPPE.forEach((t) => {
+  const p = t.pt, c = s.cls(t);
+  if (highlight && highlight !== t.id){
+    svg += '<g class="city ' + c + '" data-id="' + t.id + '"><circle class="pin" cx="' + p[0] + '" cy="' + p[1] + '" r="4.5" opacity=".55"/></g>';
+    return;
+  }
+  svg += '<g class="city ' + c + '" data-id="' + t.id + '"><a href="' + u("/tappe/" + t.id + "/") + '" aria-label="' + esc(t.citta + ", " + t.data + ", " + s.label(t)) + '">';
+  svg += '<circle class="hit" cx="' + p[0] + '" cy="' + p[1] + '" r="' + (highlight ? 22 : 14) + '"/>';
+  if (!highlight && t.dataISO) svg += '<circle class="ring" cx="' + p[0] + '" cy="' + p[1] + '" r="7"/>';
+  svg += '<circle class="pin" cx="' + p[0] + '" cy="' + p[1] + '" r="' + (highlight ? 9 : (t.dataISO ? 6.5 : 5)) + '"/>';
+  svg += '</a></g>';
+});
+---
+<div class="map-wrap">
+  <img class="map-base" src={u("/assets/mappa-italia.svg")} width={MAP_W} height={MAP_H} alt="" decoding="async" loading={highlight ? "lazy" : "eager"}>
+  <svg class="map-svg map-pins" viewBox={`0 0 ${MAP_W} ${MAP_H}`} role="group" aria-label={label} set:html={svg} />
+</div>

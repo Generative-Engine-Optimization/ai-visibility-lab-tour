@@ -1,0 +1,24 @@
+---
+import LogoRankwit from "./LogoRankwit.astro";
+import { u } from "../lib/url.js";
+---
+<footer class="site-foot on-night">
+  <div class="wrap">
+    <div class="foot-top">
+      <a class="foot-logo" href="https://www.rankwit.ai/it" target="_blank" rel="noopener" aria-label="RankWit AI"><LogoRankwit /></a>
+      <nav class="foot-links" aria-label="Collegamenti">
+        <a href={u("/#tappe")}>Tappe</a>
+        <a href={u("/hotel/")}>Hotel</a>
+        <a href={u("/destinations/")}>Destinazioni</a>
+        <a href={u("/#report")}>Report</a>
+        <a href={u("/#faq")}>Domande</a>
+        <a href={u("/#contatti")}>Contatti</a>
+        <a href="https://lab.rankwit.ai/eventi" target="_blank" rel="noopener">Tutti gli eventi ↗</a>
+        <a href="https://www.linkedin.com/company/rankwit-ai/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a href="https://lab.rankwit.ai/privacy" target="_blank" rel="noopener">Privacy</a>
+        <a href="https://lab.rankwit.ai/cookie-policy" target="_blank" rel="noopener">Cookie policy</a>
+      </nav>
+    </div>
+    <p class="legal">RANKWIT SRL SOCIETÀ BENEFIT · P. IVA e Codice Fiscale 06209300877 · info@rankwit.ai</p>
+  </div>
+</footer>

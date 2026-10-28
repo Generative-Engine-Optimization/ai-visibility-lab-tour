@@ -1,0 +1,18 @@
+---
+/* Modulo contatti: richieste generali. Il browser lo collega (controlli e invio). */
+import { ARGOMENTI } from "../lib/tour.js";
+---
+<form class="form" id="ct-form" novalidate data-form="contatti">
+  <h3>Invia un messaggio</h3>
+  <div class="form-grid">
+    <div class="fld"><label for="ct-nome">Nome e cognome</label><input id="ct-nome" type="text" autocomplete="name" required><span class="fld-err" id="ct-nome-err" hidden></span></div>
+    <div class="fld"><label for="ct-email">Email</label><input id="ct-email" type="email" autocomplete="email" required><span class="fld-err" id="ct-email-err" hidden></span></div>
+    <div class="fld"><label for="ct-org">Struttura o organizzazione <span class="opt">(facoltativo)</span></label><input id="ct-org" type="text" autocomplete="organization"></div>
+    <div class="fld"><label for="ct-tel">Telefono <span class="opt">(facoltativo)</span></label><input id="ct-tel" type="tel" autocomplete="tel"></div>
+    <div class="fld span2"><label for="ct-arg">Argomento</label><select id="ct-arg" required><option value="">Scegli un argomento</option>{ARGOMENTI.map((a) => <option>{a}</option>)}</select><span class="fld-err" id="ct-arg-err" hidden></span></div>
+    <div class="fld span2"><label for="ct-msg">Messaggio</label><textarea id="ct-msg" required></textarea><span class="fld-err" id="ct-msg-err" hidden></span></div>
+    <label class="check span2" id="ct-privacy-wrap"><input id="ct-privacy" type="checkbox" required><span>Ho letto l'<a href="https://lab.rankwit.ai/privacy" target="_blank" rel="noopener">informativa sulla privacy</a> e acconsento a essere contattato da RankWit per questa richiesta.</span></label>
+  </div>
+  <p class="form-alert" id="ct-alert" role="alert" hidden></p>
+  <div class="form-actions"><button class="btn" type="submit" id="ct-submit">Invia il messaggio <span class="arr" aria-hidden="true">→</span></button><p>Usiamo i tuoi dati solo per rispondere a questo messaggio.</p></div>
+</form>

@@ -1,0 +1,46 @@
+---
+/* Tabellone a palette con tutte le tappe. Le righe sono già nell'HTML (le leggono anche motori e assistenti AI);
+   il browser aggiorna lo stato secondo la data di oggi e fa girare le palette. */
+import Mark from "./Mark.astro";
+import { TAPPE, stati, oggiRoma, low, esc } from "../lib/tour.js";
+import { u } from "../lib/url.js";
+
+const s = stati(oggiRoma());
+const CITYLEN = Math.max(...TAPPE.map((t) => (t.tabellone || t.citta).length));
+function flaps(str, n){
+  str = str.toUpperCase(); while (str.length < n) str += " ";
+  return '<span class="flaps" aria-hidden="true">' + str.split("").map((ch) => '<span class="flap" data-c="' + (ch === " " ? "" : esc(ch)) + '">' + (ch === " " ? "&nbsp;" : esc(ch)) + "</span>").join("") + "</span>";
+}
+const righe = TAPPE.map((t) => {
+  const ed = !t.intro
+    ? (t.tabellone ? "<b>" + esc(t.citta) + "</b>" : "") + (t.collab ? "In collaborazione con " + esc(t.collab) : "")
+    : "<b>" + esc(t.edizione) + "</b>" + esc(t.formato) + " · " + esc(t.sedeBreve);
+  return '<a class="dep is-' + s.cls(t) + (s.shown[t.id] ? "" : " extra") + '" data-id="' + t.id + '" href="' + u("/tappe/" + t.id + "/") + '" aria-label="' + esc(t.citta + ", " + t.data + ", " + (t.edizione || "formato da definire") + ", " + s.label(t)) + '">'
+    + '<span class="d-time">' + flaps(t.board, 6) + "</span>"
+    + '<span class="d-city">' + flaps(t.tabellone || t.citta, CITYLEN) + '<span class="sr-only">' + esc(t.citta) + ", " + esc(t.data) + "</span></span>"
+    + '<span class="d-ed">' + ed + "</span>"
+    + '<span class="d-posti">' + flaps(t.posti || "--", 2) + "</span>"
+    + '<span class="d-st ' + s.stCls(t) + '">' + s.label(t) + "</span>"
+    + '<span class="d-go" aria-hidden="true">→</span></a>';
+}).join("") + '<a class="dep dep-ask extra" href="' + u("/#proponi") + '"><span class="d-time">' + flaps("?", 6) + '</span><span class="d-city">Altre città</span><span class="d-ed"><b>Proponi una città</b>Scegliamo le prossime tappe anche in base alle richieste</span><span class="d-posti"></span><span class="d-st st-tbd">Su richiesta</span><span class="d-go" aria-hidden="true">→</span></a>';
+const nascoste = TAPPE.filter((t) => !s.shown[t.id]).length;
+const N = s.NEXT;
+---
+<div class="board on-night">
+  <div class="board-bar">
+    <span class="board-title"><Mark /> Tappe</span>
+    {N && (
+      <a class="next-dep" id="next-dep" href={u("/tappe/" + N.id + "/")}>
+        <span class="nd-dot" aria-hidden="true"></span><span class="nd-k">{s.isToday(N) ? "Oggi" : "Prossima tappa"}</span><span class="nd-city">{N.citta}<small>{N.dataISO ? N.data : low(N.data)}</small></span><span class="arr" aria-hidden="true">→</span>
+      </a>
+    )}
+    <span class="board-clock">Ora a Roma<b class="tab" id="clock">--:--</b></span>
+  </div>
+  <div class={"board-grid" + (nascoste ? " collapsed" : "")} id="board" role="group" aria-label="Calendario delle tappe">
+    <div class="bh" aria-hidden="true"><span>Data</span><span>Città</span><span>Edizione e sede</span><span>Posti</span><span>Stato</span><span></span></div>
+    <Fragment set:html={righe} />
+  </div>
+  {nascoste > 0 && (
+    <button type="button" class="board-more" id="board-more" aria-controls="board" aria-expanded="false"><span><b>Altre tappe</b><span class="bm-count" id="board-more-n">{nascoste}</span></span><span class="bm-act" id="board-more-act">Mostra tutte ↓</span></button>
+  )}
+</div>

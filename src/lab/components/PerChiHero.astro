@@ -1,0 +1,13 @@
+---
+/* Testata delle pagine Hotel e Destinazioni: ritorno alla home e scambio tra le due pagine. */
+import { u } from "../lib/url.js";
+const { attuale } = Astro.props;
+---
+<section class="t-hero on-night"><div class="wrap">
+  <a class="back" href={u("/")}><span aria-hidden="true">←</span> Torna alla home</a>{" "}
+  <nav class="switch" aria-label="Per chi">
+    <a href={u("/hotel/")} aria-current={attuale === "hotel" ? "page" : undefined}>Hotel</a>
+    <a href={u("/destinations/")} aria-current={attuale === "destinations" ? "page" : undefined}>Destinazioni</a>
+  </nav>
+  <div class="dst-hero"><slot /></div>
+</div></section>

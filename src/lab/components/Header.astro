@@ -1,0 +1,33 @@
+---
+import Mark from "./Mark.astro";
+import { u } from "../lib/url.js";
+/* attuale: "hotel" o "destinations" per evidenziare la voce di menu della pagina aperta */
+const { attuale = "" } = Astro.props;
+const voci = [
+  { href: u("/#tappe"), testo: "Tappe" },
+  { href: u("/#report"), testo: "Report" },
+  { href: u("/hotel/"), testo: "Hotel", id: "hotel" },
+  { href: u("/destinations/"), testo: "Destinazioni", id: "destinations" },
+  { href: u("/#faq"), testo: "Domande" },
+  { href: u("/#contatti"), testo: "Contatti" }
+];
+const vociMobile = [voci[0], voci[1], { href: u("/#sessioni"), testo: "Programma" }, ...voci.slice(2)];
+---
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href={u("/")} aria-label="AI Visibility Lab, pagina iniziale">
+      <Mark />
+      <span class="brand-name">AI Visibility Lab<small>RankWit AI</small></span>
+    </a>
+    <nav class="nav" aria-label="Sezioni">
+      {voci.map((v) => <a href={v.href} aria-current={v.id && v.id === attuale ? "page" : undefined}>{v.testo}</a>)}
+    </nav>
+    <a class="btn btn-primary btn-s" href={u("/#avvisami")}>Avvisami <span class="arr" aria-hidden="true">→</span></a>
+    <button class="menu-btn" type="button" id="menu-btn" aria-expanded="false" aria-controls="mnav" aria-label="Apri il menu"><span></span><span></span></button>
+  </div>
+  <nav class="mnav" id="mnav" aria-label="Menu" hidden>
+    <div class="wrap">
+      {vociMobile.map((v) => <a href={v.href} aria-current={v.id && v.id === attuale ? "page" : undefined}>{v.testo}</a>)}
+    </div>
+  </nav>
+</header>

@@ -1,0 +1,47 @@
+---
+/* Modulo "Avvisami / proponi una città". Il markup è già nella pagina; il browser lo collega (controlli e invio).
+   p: prefisso degli id (due moduli nella stessa pagina non devono avere lo stesso).
+   fisso: città già scelta (pagina di una tappa), altrimenti si mostra l'elenco delle città.
+   pagina: da dove arriva la richiesta, finisce nei dati inviati. */
+import { TIPI, stati, oggiRoma, low } from "../lib/tour.js";
+const { p, fisso = "", pagina } = Astro.props;
+const s = stati(oggiRoma());
+---
+<form class="form" id={`${p}-form`} novalidate data-form="avvisami" data-p={p} data-fisso={fisso} data-pagina={pagina}>
+  {!fisso && <h3>Richiesta per le prossime tappe</h3>}
+  <div class="form-grid">
+    {fisso ? (
+      <input type="hidden" id={`${p}-citta`} value={fisso}>
+    ) : (
+      <>
+        <div class="fld span2">
+          <label for={`${p}-citta`}>Città</label>
+          <select id={`${p}-citta`} required>
+            <option value="">Scegli una città</option>
+            {s.upcoming.map((t) => <option value={t.citta} data-date={t.dataISO || ""}>{t.citta} ({low(t.data)})</option>)}
+            <option value="__altra">Un'altra città</option>
+          </select>
+          <span class="fld-err" id={`${p}-citta-err`} hidden></span>
+        </div>
+        <div class="fld span2" id={`${p}-altra-wrap`} hidden>
+          <label for={`${p}-altra`}>Quale città proponi?</label>
+          <input id={`${p}-altra`} type="text" autocomplete="address-level2">
+          <span class="fld-err" id={`${p}-altra-err`} hidden></span>
+        </div>
+      </>
+    )}
+    <div class="fld"><label for={`${p}-nome`}>Nome e cognome</label><input id={`${p}-nome`} type="text" autocomplete="name" required><span class="fld-err" id={`${p}-nome-err`} hidden></span></div>
+    <div class="fld"><label for={`${p}-email`}>Email</label><input id={`${p}-email`} type="email" autocomplete="email" required><span class="fld-err" id={`${p}-email-err`} hidden></span></div>
+    <div class="fld"><label for={`${p}-struttura`}>Nome della struttura</label><input id={`${p}-struttura`} type="text" autocomplete="organization" required><span class="fld-err" id={`${p}-struttura-err`} hidden></span></div>
+    <div class="fld">
+      <label for={`${p}-tipo`}>Tipo di struttura</label>
+      <select id={`${p}-tipo`} required><option value="">Scegli il tipo</option>{TIPI.map((x) => <option>{x}</option>)}</select>
+      <span class="fld-err" id={`${p}-tipo-err`} hidden></span>
+    </div>
+    <div class="fld"><label for={`${p}-sito`}>Sito web <span class="opt">(facoltativo)</span></label><input id={`${p}-sito`} type="url" inputmode="url" autocomplete="url" placeholder="https://"><span class="fld-err" id={`${p}-sito-err`} hidden></span></div>
+    <div class="fld"><label for={`${p}-tel`}>Telefono <span class="opt">(facoltativo)</span></label><input id={`${p}-tel`} type="tel" autocomplete="tel"></div>
+    <label class="check span2" id={`${p}-privacy-wrap`}><input id={`${p}-privacy`} type="checkbox" required><span>Ho letto l'<a href="https://lab.rankwit.ai/privacy" target="_blank" rel="noopener">informativa sulla privacy</a> e acconsento a essere contattato da RankWit per questa richiesta.</span></label>
+  </div>
+  <p class="form-alert" id={`${p}-alert`} role="alert" hidden></p>
+  <div class="form-actions"><button class="btn" type="submit" id={`${p}-submit`}>Invia la richiesta <span class="arr" aria-hidden="true">→</span></button><p>Usiamo i tuoi dati solo per questa richiesta.</p></div>
+</form>
