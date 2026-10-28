@@ -14,7 +14,7 @@ const SENZA_SITEMAP = TAPPE.filter((t) => !t.dataISO).map((t) => `/tappe/${t.id}
 const REDIRECTS = Object.fromEntries(Object.entries(ALIAS).map(([vecchio, id]) => [`/tappe/${vecchio}/`, `${BASE}/tappe/${id}/`]));
 
 export default defineConfig({
-  site: ANTEPRIMA ? "https://gherybeans-rankwit.github.io" : "https://lab.rankwit.ai",
+  site: ANTEPRIMA ? "https://generative-engine-optimization.github.io" : "https://lab.rankwit.ai",
   base: BASE || "/",
   trailingSlash: "always",
   build: { format: "directory" },

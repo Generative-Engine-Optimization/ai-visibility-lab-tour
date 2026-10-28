@@ -1,6 +1,6 @@
 # AI Visibility Lab · sito del tour (lab.rankwit.ai)
 
-Sito del roadshow di RankWit AI, fatto in Astro. Anteprima: https://gherybeans-rankwit.github.io/ai-visibility-lab-tour/
+Sito del roadshow di RankWit AI, fatto in Astro. Anteprima: https://generative-engine-optimization.github.io/ai-visibility-lab-tour/
 
 ## Pagine
 
