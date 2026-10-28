@@ -1,0 +1,277 @@
+---
+/* pagina statica anche se il progetto è in modalità server */
+export const prerender = true;
+/* Home del tour: tutte le sezioni della pagina, con il testo già nell'HTML. */
+import Base from "../lab/layouts/Base.astro";
+import Mark from "../lab/components/Mark.astro";
+import MapTour from "../lab/components/MapTour.astro";
+import Board from "../lab/components/Board.astro";
+import FormAvvisami from "../lab/components/FormAvvisami.astro";
+import FormContatti from "../lab/components/FormContatti.astro";
+import { TAPPE, stati, oggiRoma, MAIL } from "../lab/lib/tour.js";
+import { FAQ } from "../lab/lib/faq.js";
+import { SESSIONI, REPORT, PASSI } from "../lab/lib/contenuti.js";
+import { LOGHI } from "../lab/lib/loghi.js";
+import { u } from "../lab/lib/url.js";
+import { ORGANIZZAZIONE, SITO_WEB, pagina, serie, faqPage } from "../lab/lib/seo.js";
+
+const oggi = oggiRoma();
+const s = stati(oggi);
+const titolo = "AI Visibility Lab: il tour sulla visibilità AI per hotel";
+const descrizione = "Il tour di RankWit AI per hotel e destinazioni: formazione in Italia e un report su come ChatGPT, Gemini e gli altri assistenti AI descrivono la tua struttura.";
+const jsonld = [
+  ORGANIZZAZIONE,
+  SITO_WEB,
+  Object.assign(pagina({ path: "/", titolo, descrizione, immagine: "https://lab.rankwit.ai/og/tour.png" }), { about: { "@id": "https://lab.rankwit.ai/#tour" } }),
+  serie(TAPPE, true),
+  faqPage(FAQ, "/")
+];
+const logo = (nome, alt, h, extra = {}) => ({ src: u("/assets/loghi/" + nome + ".webp"), alt, width: LOGHI[nome][0], height: LOGHI[nome][1], style: `height:${h}px`, ...extra });
+
+const PARTNER = [
+  { logo: "nana-bianca", h: 46, where: "Firenze · sede", who: "Nana Bianca Startup Studio", what: "Lo startup studio dell'Innovation Center di Fondazione CR Firenze, dove si è tenuta la prima edizione." },
+  { logo: "stellar", h: 42, where: "Firenze · pranzo", who: "Stellar", what: "Il ristorante dentro Nana Bianca che ha ospitato il pranzo di networking." },
+  { logo: "hospitality-day", h: 70, where: "Rimini · evento", who: "Hospitality Day", what: "La tappa di Rimini si è svolta durante la dodicesima edizione della manifestazione." },
+  { logo: "officina-turistica", h: 48, where: "Firenze e Rimini · media partner", who: "Officina Turistica", what: "Blog indipendente sull'ospitalità, attivo dal 2009." },
+  { logo: "teamwork-hospitality", h: 74, where: "Firenze e Rimini · formazione", who: "Teamwork Hospitality", what: "Consulenza e formazione per chi lavora nel turismo." }
+];
+const CLIENTI = [
+  ["best-western", "Best Western Italia", 40], ["loly", "Loly Boutique Hotel", 46], ["puleera", "Puleera Boutique Hotel", 46],
+  ["chalet-del-sogno", "Chalet del Sogno", 66], ["carattere-toscano", "Carattere Toscano Hotels & Resorts", 50], ["garden-primavera", "Garden Hotel Primavera", 66],
+  ["ars-collection", "Ars Collection Firenze", 34], ["annunziata", "Hotel Annunziata", 64], ["visit-romagna", "Visit Romagna", 56],
+  ["maliosa", "Fattoria La Maliosa", 60], ["out-of-the-box", "Out of the Box Florence", 70]
+];
+const mappaLabel = "Mappa delle tappe: " + TAPPE.map((c) => c.citta + " (" + s.label(c).toLowerCase() + ")").join(", ");
+---
+<Base titolo={titolo} descrizione={descrizione} path="/" immagine="/og/tour.png" jsonld={jsonld} home>
+<main id="home">
+  <section class="hero on-night" id="top">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">AI Visibility Lab · in tour per l'Italia</p>
+          <h1>L'AI sceglie pochi nomi. <em>Ti mostriamo come essere tra questi.</em></h1>
+          <p class="lead">Con l'AI Visibility Lab giriamo l'Italia, una tappa alla volta. Ti aspettiamo con un report preparato a mano sulla tua struttura: come ti descrivono gli assistenti AI, chi citano al posto tuo e da dove cominciare a sistemare il sito.</p>
+          <div class="hero-cta">
+            <a class="btn btn-light" href="#tappe">Vedi le tappe <span class="arr" aria-hidden="true">→</span></a>
+            <a class="btn btn-ghost" href="#proponi">Proponi la tua città</a>
+          </div>
+          <figure class="chat chat-inline" id="hero-chat" aria-live="polite">
+            <div class="chat-top"><b>ChatGPT</b><span id="hc-city">Domanda di esempio · Firenze</span></div>
+            <p class="q" id="hc-q">«migliori hotel a Firenze»</p>
+            <ol class="ranks">
+              <li><span class="n">1</span><span>Concorrente A</span><span class="w">citato</span></li>
+              <li><span class="n">2</span><span>Concorrente B</span><span class="w">citato</span></li>
+              <li><span class="n">3</span><span>Concorrente C</span><span class="w">citato</span></li>
+              <li class="you"><span class="n">·</span><span>La tua struttura</span><span class="w">assente</span></li>
+            </ol>
+            <figcaption class="chat-cap"><b>Di solito i nomi sono tre o quattro.</b> Se il tuo non c'è, per chi chiede non esisti. Passa sui punti della mappa: per ogni tappa c'è una domanda di esempio.</figcaption>
+          </figure>
+        </div>
+        <div class="hero-map">
+          <div id="map-hero"><MapTour label={mappaLabel} /></div>
+          <div class="map-tip" id="map-tip" role="tooltip" hidden><b id="map-tip-name"></b><span id="map-tip-when"></span></div>
+          <ul class="map-legend" aria-label="Legenda della mappa">
+            <li><i class="lg past"></i>Conclusa</li><li><i class="lg next"></i>Prossima tappa</li><li><i class="lg sched"></i>In programma</li><li><i class="lg tbd"></i>Prossimamente</li>
+          </ul>
+        </div>
+      </div>
+      <div class="facts">
+        <div><b class="tab">81%</b><span>dei viaggiatori usa già l'AI per scoprire destinazioni e organizzare i viaggi</span><small>Alipay+ e S&amp;P Global, settembre 2026 · 6.000 persone in 9 Paesi tra Europa, Asia e Stati Uniti</small></div>
+        <div><b class="tab">5</b><span>assistenti AI analizzati: ChatGPT, Gemini, Claude, Perplexity e Google AI Overviews</span></div>
+        <div><b class="tab">300+</b><span>aziende del turismo usano RankWit</span></div>
+        <div><b class="tab">500 €</b><span>valore del primo audit, incluso nel biglietto di ogni partecipante</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="tappe">
+    <div class="wrap">
+      <div class="sec-head split">
+        <div style="display:grid;gap:16px"><p class="eyebrow">Tappe</p><h2 class="h2">Calendario delle tappe</h2></div>
+        <p class="lead">Qui trovi le tappe concluse e quelle in arrivo. Per le città segnate come «Prossimamente» pubblichiamo data e sede appena sono definite.</p>
+      </div>
+      <Board />
+    </div>
+  </section>
+
+  <section class="band band-night on-night" id="video">
+    <div class="wrap">
+      <div class="sec-head split">
+        <div style="display:grid;gap:16px"><p class="eyebrow">La prima edizione</p><h2 class="h2">Com'è andata <em>a Firenze</em></h2></div>
+        <p class="lead">Il 23 settembre all'Innovation Center di Fondazione CR Firenze, con il report di ogni partecipante sul tavolo.</p>
+      </div>
+      <figure class="vid" id="vid-box">
+        <video id="vid" controls loop playsinline preload="metadata" poster="https://lab.rankwit.ai/assets/evento-rimini-poster.jpg" src="https://lab.rankwit.ai/assets/evento-rimini.mp4" aria-label="Video della prima edizione dell'AI Visibility Lab a Firenze"></video>
+        <a class="vid-fallback" id="vid-fallback" href="https://lab.rankwit.ai/assets/evento-rimini.mp4" target="_blank" rel="noopener" hidden><span class="vid-play" aria-hidden="true">▶</span><span>Guarda il video della prima edizione ↗</span></a>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band band-surface" id="come">
+    <div class="wrap">
+      <div class="sec-head split">
+        <div style="display:grid;gap:16px"><p class="eyebrow">Partecipare</p><h2 class="h2">Come si partecipa</h2></div>
+        <p class="lead">Dalla candidatura al giorno della tappa bastano due moduli online. Non chiediamo accessi al tuo sito.</p>
+      </div>
+      <div class="enter solo">
+        {PASSI.map((x) => <div><span class="big tab">{x.big}<small>{x.unit}</small></span><h3>{x.t}</h3><p>{x.p}</p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="band band-night on-night" id="report">
+    <div class="wrap report-grid">
+      <div>
+        <p class="eyebrow">Report</p>
+        <h2 class="h2" style="margin:16px 0 20px">Cosa c'è <em>nel report</em></h2>
+        <p class="lead">Il report mostra come gli assistenti AI descrivono la tua struttura e cosa, nel sito, ne limita la visibilità.</p>
+        <dl class="parts">
+          {REPORT.map((x) => <div><dt>{x.t}</dt><dd>{x.d}</dd></div>)}
+        </dl>
+        <p class="price-note"><b>500 €</b> è il valore del primo audit, incluso nel prezzo del biglietto di ogni partecipante.</p>
+      </div>
+      <div class="fan-wrap">
+        <div class="fan" id="fan" tabindex="0" role="button" aria-label="Sfoglia le pagine del report di esempio">
+          <article class="pg pg-act p2" aria-label="Pagina: priorità">
+            <div class="pg-in">
+              <span class="pg-k">Priorità</span>
+              <span class="pg-t">Le tre cose da fare, in ordine</span>
+              <div class="acts">
+                <div><i>1</i><b>Riscrivere la pagina delle camere</b><span>Prima la risposta, poi i dettagli, con dati precisi.</span></div>
+                <div><i>2</i><b>Completare i dati strutturati</b><span>Prezzi, servizi e posizione in un formato leggibile dagli assistenti.</span></div>
+                <div><i>3</i><b>Scegliere le domande da monitorare</b><span>Quelle che gli ospiti fanno prima di prenotare.</span></div>
+              </div>
+            </div>
+          </article>
+          <article class="pg pg-sov p1" aria-label="Pagina: quota di voce">
+            <div class="pg-in">
+              <span class="pg-k">Quota di voce</span>
+              <span class="pg-t">La tua struttura è terza su quattro</span>
+              <span class="pg-s">Compare nel 22% delle risposte, il primo concorrente nel 41%.</span>
+              <div class="bars">
+                <div class="bar"><span>Concorrente A</span><span class="trk"><span class="fill" style="width:41%"></span></span><span class="val tab">41%</span></div>
+                <div class="bar"><span>Concorrente B</span><span class="trk"><span class="fill" style="width:28%"></span></span><span class="val tab">28%</span></div>
+                <div class="bar you"><span>La tua struttura</span><span class="trk"><span class="fill" style="width:22%"></span></span><span class="val tab">22%</span></div>
+                <div class="bar"><span>Concorrente C</span><span class="trk"><span class="fill" style="width:9%"></span></span><span class="val tab">9%</span></div>
+              </div>
+              <div class="pg-tip"><b>Cosa significa</b>Le pagine delle camere descrivono la struttura ma non rispondono alle domande degli ospiti. È il primo intervento da fare.</div>
+            </div>
+          </article>
+          <article class="pg pg-cover p0" aria-label="Copertina del report di esempio">
+            <div class="pc-l">
+              <span class="pc-brand"><Mark /> AI Visibility Lab · Report</span>
+              <span class="pc-title">Visibilità AI</span>
+              <span class="pc-claim">Citata da ChatGPT e Claude, mai da Gemini e Perplexity in 18 domande su 42</span>
+              <div class="pc-mx" role="img" aria-label="Esempio: per tre domande, quali assistenti citano la struttura">
+                <span></span><span>ChatGPT</span><span>Gemini</span><span>Claude</span><span>Perplexity</span><span>AI Overviews</span>
+                <span class="pq">«hotel per famiglie vicino al mare»</span><i class="y"></i><i></i><i class="y"></i><i></i><i class="y"></i>
+                <span class="pq">«hotel con spa e piscina coperta»</span><i class="y"></i><i></i><i class="y"></i><i></i><i></i>
+                <span class="pq">«dove dormire vicino alla fiera»</span><i></i><i></i><i class="y"></i><i></i><i class="y"></i>
+              </div>
+              <span class="pc-foot">RankWit AI · dati di esempio</span>
+            </div>
+            <div class="pc-r">
+              <small>Quota di voce</small>
+              <b class="pc-kpi tab">22%</b>
+              <span class="pc-rank">Terza su quattro nella tua zona</span>
+              <div class="pc-bars" aria-hidden="true"><i style="height:100%"></i><i style="height:68%"></i><i class="you" style="height:54%"></i><i style="height:22%"></i></div>
+              <small class="pc-for">Preparato per</small><b class="pc-name">La tua struttura</b>
+            </div>
+          </article>
+        </div>
+        <p class="fan-cap">Report di esempio con dati fittizi. Clicca sui fogli per sfogliarli.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="sessioni">
+    <div class="wrap">
+      <div class="sec-head split">
+        <div style="display:grid;gap:16px"><p class="eyebrow">Programma</p><h2 class="h2">Gli argomenti <em>delle sessioni</em></h2></div>
+        <p class="lead">Una giornata di formazione in quattro parti, dal quadro generale agli strumenti pratici. Ogni partecipante ha il proprio report e lo usa come esempio concreto durante le sessioni. Durata e orari dipendono dal formato e sono indicati nella pagina di ogni tappa.</p>
+      </div>
+      <div class="programme topics">
+        {SESSIONI.map((x) => (
+          <div class="prog-row">
+            <span class="prog-t tab">{x.n}</span>
+            <div class="prog-head"><h3>{x.t}</h3><ul class="prog-chips">{x.chips.map((c) => <li>{c}</li>)}</ul></div>
+            <p class="desc">{x.d}</p>
+            <p class="out"><small>Porti a casa</small>{x.out}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band band-surface" id="per-chi">
+    <div class="wrap">
+      <div class="sec-head"><p class="eyebrow">Per chi</p><h2 class="h2">Per hotel <em>e destinazioni</em></h2></div>
+      <div class="who-cards">
+        <a class="who-card" href={u("/hotel/")}><span class="eyebrow">Hotel</span><b>Cosa dicono gli assistenti AI del tuo hotel, da quali fonti lo prendono e quali strutture citano al posto tuo.</b><span class="go">Il Lab per gli hotel →</span></a>
+        <a class="who-card" href={u("/destinations/")}><span class="eyebrow">Destinazioni</span><b>Cosa dicono gli assistenti AI del territorio, quanti errori ripetono e da quali fonti li prendono.</b><span class="go">Il Lab per le destinazioni →</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band-violet on-violet" id="richiedi">
+    <div class="wrap">
+      <div class="ask-grid">
+        <div class="ask-intro" id="avvisami">
+          <p class="eyebrow">Prossime tappe</p>
+          <h2 class="h2">Avvisami o proponi una città</h2>
+          <p class="lead">Scegli una delle città in programma per ricevere un'email quando apriamo le candidature, oppure proponine un'altra. Le richieste ci aiutano a decidere dove andare.</p>
+          <p class="alt">Non vuoi aspettare la prossima tappa? <a href="https://try.rankwit.ai/report-gratuito" target="_blank" rel="noopener">Richiedi un report a distanza ↗</a></p>
+        </div>
+        <div id="proponi"><FormAvvisami p="ask" pagina="home" /></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="partner">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Partner</p>
+        <h2 class="h2">Partner e sedi</h2>
+      </div>
+      <div class="partners">
+        {PARTNER.map((x) => (
+          <div class="pcard"><div class="plogo"><img {...logo(x.logo, x.who, x.h)} loading="lazy" decoding="async"></div><div class="ptext"><span class="where">{x.where}</span><span class="who">{x.who}</span><span class="what">{x.what}</span></div></div>
+        ))}
+      </div>
+      <div class="clients">
+        <p>Tra gli hotel, i gruppi e le destinazioni che hanno misurato la loro visibilità AI con RankWit:</p>
+        <div class="marquee logo-marquee"><ul id="client-row">
+          {CLIENTI.map(([n, alt, h]) => <li><img {...logo(n, alt, h)} loading="lazy" decoding="async"></li>)}
+          {CLIENTI.map(([n, , h]) => <li aria-hidden="true"><img {...logo(n, "", h)} loading="lazy" decoding="async"></li>)}
+        </ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band rule-top" id="faq">
+    <div class="wrap faq-grid">
+      <div class="sec-head">
+        <p class="eyebrow">Domande</p>
+        <h2 class="h2">Domande frequenti</h2>
+        <p class="lead">Non trovi la risposta? <a class="link" href="#contatti">Scrivici dal modulo contatti</a> o a {MAIL}.</p>
+      </div>
+      <div class="faq">
+        {FAQ.map((f) => <details><summary>{f.q}</summary><p>{f.a}</p></details>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="band band-surface" id="contatti">
+    <div class="wrap ask-grid">
+      <div class="ask-intro ct-intro">
+        <p class="eyebrow">Contatti</p>
+        <h2 class="h2">Scrivici</h2>
+        <p class="lead">Per domande sul Lab e sulle tappe, per organizzare una tappa nel tuo territorio, per collaborazioni o per la stampa.</p>
+        <p class="ct-mail">Oppure scrivi a <b>{MAIL}</b></p>
+      </div>
+      <div><FormContatti /></div>
+    </div>
+  </section>
+</main>
+</Base>

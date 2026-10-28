@@ -1,0 +1,98 @@
+---
+/* pagina statica anche se il progetto è in modalità server */
+export const prerender = true;
+/* Il Lab per gli hotel. */
+import Base from "../lab/layouts/Base.astro";
+import PerChiHero from "../lab/components/PerChiHero.astro";
+import CtaTappe from "../lab/components/CtaTappe.astro";
+import { SITO } from "../lab/lib/tour.js";
+import { ORGANIZZAZIONE, SITO_WEB, TOUR_ID, pagina, briciole } from "../lab/lib/seo.js";
+
+const path = "/hotel/";
+const titolo = "Visibilità AI per hotel · AI Visibility Lab";
+const descrizione = "Gli assistenti AI descrivono il tuo hotel con dati presi da OTA e recensioni vecchie. Il report dell'AI Visibility Lab mostra cosa dicono e cosa cambiare.";
+const jsonld = [
+  ORGANIZZAZIONE,
+  SITO_WEB,
+  Object.assign(pagina({ path, titolo, descrizione, immagine: SITO + "/og/hotel.png" }), {
+    about: { "@id": TOUR_ID },
+    audience: { "@type": "BusinessAudience", audienceType: "Hotel, gruppi alberghieri e strutture ricettive" },
+    breadcrumb: { "@id": SITO + path + "#briciole" }
+  }),
+  Object.assign(briciole([{ nome: "AI Visibility Lab", path: "/" }, { nome: "Hotel", path }]), { "@id": SITO + path + "#briciole" })
+];
+---
+<Base titolo={titolo} descrizione={descrizione} path={path} immagine="/og/hotel.png" jsonld={jsonld} attuale="hotel">
+<main id="view-perchi">
+  <PerChiHero attuale="hotel">
+    <div>
+      <p class="eyebrow">Il Lab per gli hotel</p>
+      <h1 class="page-h1">L'AI descrive il tuo hotel. <em>Con i dati degli altri.</em></h1>
+      <p class="lead">Prezzi, servizi e condizioni che gli assistenti AI danno ai tuoi ospiti arrivano spesso da OTA, recensioni vecchie e portali. Il report mostra cosa dicono del tuo hotel, da dove lo prendono e cosa cambiare sul sito perché la fonte sia tu.</p>
+    </div>
+    <figure class="chat aw">
+      <div class="chat-top"><b>Assistente AI</b><span>Risposta di esempio · dati inventati</span></div>
+      <p class="q">«hotel in centro con parcheggio che accetta cani»</p>
+      <ol>
+        <li><p>La tua struttura ha <mark>solo parcheggio a pagamento in strada</mark>.</p><div class="aw-fix"><span class="aw-src">Preso da una recensione del 2020</span><span class="aw-ok">Dato ufficiale: garage privato incluso</span></div></li>
+        <li><p><mark>Non accetta animali</mark>: meglio scegliere un'altra struttura.</p><div class="aw-fix"><span class="aw-src">Preso da un portale di viaggi</span><span class="aw-ok">Dato ufficiale: cani ammessi</span></div></li>
+        <li><p>Camere <mark>da 89 € a notte su un portale di prenotazione</mark>.</p><div class="aw-fix"><span class="aw-src">Preso da un'OTA, tariffa del 2023</span><span class="aw-ok">Dato ufficiale: da 119 € sul sito</span></div></li>
+      </ol>
+      <figcaption class="chat-cap"><b>Il sito dell'hotel non è tra le fonti.</b> L'ospite cercava parcheggio e un hotel che accetta il cane: con questa risposta prenota da un concorrente.</figcaption>
+    </figure>
+  </PerChiHero>
+  <section class="band">
+    <div class="wrap pc-body">
+      <div class="pc-block">
+        <div class="sec-head"><p class="eyebrow">Perché è un problema</p><h2 class="h2">Quando l'AI sbaglia, <em>la prenotazione va altrove</em></h2><p class="lead">Gli assistenti mettono insieme quello che trovano: schede delle OTA, recensioni di anni fa, articoli. Se il sito dell'hotel non risponde in modo chiaro, usano le altre fonti. L'ospite non ti scrive per chiedere conferma: sceglie un altro hotel.</p></div>
+        <div class="kinds harm">
+          <div class="kind"><span class="n">01</span><h3>Prenotazioni perse</h3><p>L'ospite scarta il tuo hotel per un servizio che hai, come il parcheggio o gli animali ammessi, o per un prezzo che non è più quello. Non lo saprai mai.</p></div>
+          <div class="kind"><span class="n">02</span><h3>Più commissioni</h3><p>Se le informazioni chiare stanno solo sulle OTA, è lì che l'assistente manda l'ospite a prenotare. La prenotazione arriva, ma paghi la commissione.</p></div>
+          <div class="kind"><span class="n">03</span><h3>Il posto ai concorrenti</h3><p>Nelle risposte ci sono tre o quattro nomi. Se di te l'assistente ha informazioni scarse o confuse, cita chi le ha chiare.</p></div>
+        </div>
+        <aside class="case">
+          <p class="eyebrow">Sta già succedendo</p>
+          <div class="case-list">
+            <p>Settembre 2026. Google permette di prenotare un hotel direttamente in AI Mode, per ora negli Stati Uniti. Al lancio i partner sono cinque grandi catene e cinque OTA, tra cui Booking.com ed Expedia. <a href="https://www.hoteldive.com/news/google-introduces-ai-mode-hotel-booking/829265/" target="_blank" rel="noopener">Hotel Dive ↗</a></p>
+            <p>Giugno 2026. In un'analisi di 240 risposte di ChatGPT sui prezzi degli hotel, quasi metà delle pagine lette erano OTA. Per gli hotel indipendenti il sito ufficiale era il 15% delle fonti citate, le OTA il 37%. <a href="https://www.nicolassitter.com/research/chatgpt-hotel-price-sources-2026" target="_blank" rel="noopener">Nicolas Sitter ↗</a></p>
+          </div>
+        </aside>
+      </div>
+      <div class="pc-block dmo">
+        <div class="sec-head"><p class="eyebrow">Cosa si può fare</p><h2 class="h2">La fonte giusta <em>è il tuo sito</em></h2><p class="lead">Prezzi, servizi, condizioni, distanze: nessuno li conosce meglio dell'hotel. Il lavoro è fare in modo che gli assistenti trovino il tuo sito, lo capiscano e lo preferiscano alle OTA e alle recensioni vecchie. Si può fare, e i risultati si misurano.</p></div>
+        <ol>
+          <li><b>Trovare gli errori</b><span>Confrontiamo quello che gli assistenti dicono del tuo hotel con i dati reali: servizi, prezzi, condizioni, distanze. Per ogni errore indichiamo la fonte da cui arriva.</span></li>
+          <li><b>Rendere chiaro il sito</b><span>Pagine che rispondono alle domande degli ospiti, come parcheggio, animali, colazione e check-in. Camere, servizi e posizione scritti con dati strutturati: nel report li trovi già compilati.</span></li>
+          <li><b>Allineare le schede</b><span>Le stesse informazioni sul sito, nella scheda di Google, sulle OTA e sui portali. Se ovunque c'è la stessa versione, gli assistenti la ripetono.</span></li>
+          <li><b>Controllare nel tempo</b><span>Rifacciamo le stesse domande per vedere se gli errori spariscono, quante volte l'hotel viene citato e quante volte gli assistenti indicano il tuo sito.</span></li>
+        </ol>
+      </div>
+      <div class="pc-block">
+        <div class="sec-head"><p class="eyebrow">Il report</p><h2 class="h2">Cosa analizziamo per un hotel</h2></div>
+        <dl class="rows">
+          <div><dt>Errori nelle risposte</dt><dd>Servizi, prezzi, condizioni e distanze che gli assistenti riportano in modo sbagliato, confrontati con i dati del tuo hotel.</dd></div>
+          <div><dt>Fonti</dt><dd>Quante volte gli assistenti citano il tuo sito e quante OTA, portali di recensioni e articoli.</dd></div>
+          <div><dt>Quota di voce</dt><dd>Quante volte gli assistenti AI citano il tuo hotel rispetto ai concorrenti, assistente per assistente.</dd></div>
+          <div><dt>Concorrenti reali</dt><dd>Le strutture che gli assistenti citano davvero nelle risposte sulla tua zona, anche quando non sono quelle che consideri concorrenti.</dd></div>
+          <div><dt>Punti forti e deboli</dt><dd>I temi in cui gli assistenti ti citano più dei concorrenti e quelli in cui ti citano meno: posizione, servizi, camere, prezzo, tipo di ospite.</dd></div>
+          <div><dt>Pagine del sito</dt><dd>Quali pagine rispondono alle domande degli ospiti e quali vanno riscritte, a partire da camere e servizi.</dd></div>
+          <div><dt>Dati strutturati</dt><dd>Prezzi, servizi, posizione e condizioni scritti in un formato che gli assistenti leggono senza errori. Nel report li trovi già compilati.</dd></div>
+        </dl>
+      </div>
+      <div class="pc-block">
+        <div class="sec-head"><p class="eyebrow">Tipi di hotel</p><h2 class="h2">Per quale hotel</h2></div>
+        <div class="kinds">
+          <div class="kind"><h3>Hotel balneari e stagionali</h3><ul><li>La posizione dell'hotel nelle risposte su località, categoria e fascia di prezzo.</li><li>Le domande da monitorare nei mesi in cui si prenota.</li></ul></div>
+          <div class="kind"><h3>Hotel di città e business</h3><ul><li>Le risposte alle domande di prossimità: vicino alla fiera, alla stazione, al centro congressi.</li><li>Distanze, orari e condizioni scritti in un formato che gli assistenti leggono correttamente.</li></ul></div>
+          <div class="kind"><h3>Gruppi e catene</h3><ul><li>La quota di voce di ogni struttura del gruppo, messa a confronto.</li><li>Un modello di pagina da riscrivere una volta e applicare a tutte le strutture.</li></ul></div>
+        </div>
+      </div>
+      <div class="pc-block">
+        <div class="sec-head"><p class="eyebrow">Domande di esempio</p><h2 class="h2">Le domande che analizziamo</h2><p class="lead">Alcuni esempi delle domande che gli ospiti fanno agli assistenti AI prima di prenotare. Nel report ne usiamo più di quaranta, scelte in base al tuo hotel.</p></div>
+        <div class="bubbles"><p class="q">«hotel per famiglie vicino al mare con piscina»</p><p class="q">«hotel vicino alla stazione con parcheggio»</p><p class="q">«hotel con spa per un weekend in coppia»</p><p class="q">«dove dormire vicino alla fiera»</p><p class="q">«hotel pet friendly in centro città»</p><p class="q">«boutique hotel romantico in una città d'arte»</p><p class="q">«hotel vicino all'aeroporto con navetta»</p><p class="q">«agriturismo con piscina e ristorante»</p></div>
+      </div>
+    </div>
+  </section>
+  <CtaTappe />
+</main>
+</Base>
