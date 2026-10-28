@@ -35,7 +35,7 @@ const PARTNER = [
   { logo: "officina-turistica", h: 48, where: "Firenze e Rimini · media partner", who: "Officina Turistica", what: "Blog indipendente sull'ospitalità, attivo dal 2009." },
   { logo: "teamwork-hospitality", h: 74, where: "Firenze e Rimini · formazione", who: "Teamwork Hospitality", what: "Consulenza e formazione per chi lavora nel turismo." }
 ];
-const CLIENTI = [
+const STRUTTURE = [
   ["best-western", "Best Western Italia", 40], ["loly", "Loly Boutique Hotel", 46], ["puleera", "Puleera Boutique Hotel", 46],
   ["chalet-del-sogno", "Chalet del Sogno", 66], ["carattere-toscano", "Carattere Toscano Hotels & Resorts", 50], ["garden-primavera", "Garden Hotel Primavera", 66],
   ["ars-collection", "Ars Collection Firenze", 34], ["annunziata", "Hotel Annunziata", 64], ["visit-romagna", "Visit Romagna", 56],
@@ -239,11 +239,11 @@ const mappaLabel = "Mappa delle tappe: " + TAPPE.map((c) => c.citta + " (" + s.l
           <div class="pcard"><div class="plogo"><img {...logo(x.logo, x.who, x.h)} loading="lazy" decoding="async"></div><div class="ptext"><span class="where">{x.where}</span><span class="who">{x.who}</span><span class="what">{x.what}</span></div></div>
         ))}
       </div>
-      <div class="clients">
+      <div class="loghi-strutture">
         <p>Tra gli hotel, i gruppi e le destinazioni che hanno misurato la loro visibilità AI con RankWit:</p>
-        <div class="marquee logo-marquee"><ul id="client-row">
-          {CLIENTI.map(([n, alt, h]) => <li><img {...logo(n, alt, h)} loading="lazy" decoding="async"></li>)}
-          {CLIENTI.map(([n, , h]) => <li aria-hidden="true"><img {...logo(n, "", h)} loading="lazy" decoding="async"></li>)}
+        <div class="marquee logo-marquee"><ul id="loghi-row">
+          {STRUTTURE.map(([n, alt, h]) => <li><img {...logo(n, alt, h)} loading="lazy" decoding="async"></li>)}
+          {STRUTTURE.map(([n, , h]) => <li aria-hidden="true"><img {...logo(n, "", h)} loading="lazy" decoding="async"></li>)}
         </ul></div>
       </div>
     </div>
