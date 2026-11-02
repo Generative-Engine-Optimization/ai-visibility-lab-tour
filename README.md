@@ -1,6 +1,6 @@
 # AI Visibility Lab · sito del tour (visibility-lab.rankwit.ai)
 
-Sito del roadshow di RankWit AI, fatto in Astro, pubblicato su https://visibility-lab.rankwit.ai (Cloudflare Pages, progetto `ai-visibility-lab`). Anteprima: https://generative-engine-optimization.github.io/ai-visibility-lab-tour/
+Sito del roadshow di RankWit AI, fatto in Astro, pubblicato su https://visibility-lab.rankwit.ai (Cloudflare Pages, progetto `visibility-lab`). Anteprima: https://generative-engine-optimization.github.io/ai-visibility-lab-tour/
 
 ## Pagine
 
@@ -59,7 +59,7 @@ npm run og                # rigenera public/og (serve: npm i -D playwright && np
 
 ## Messa online
 
-Il sito è pubblicato su Cloudflare Pages (progetto `ai-visibility-lab`, dominio visibility-lab.rankwit.ai) con `npm run deploy`, che costruisce `dist/` e la carica con wrangler. Servono le variabili d'ambiente `CLOUDFLARE_API_TOKEN` (permesso Cloudflare Pages: Edit) e `CLOUDFLARE_ACCOUNT_ID`.
+Il sito è pubblicato su Cloudflare Pages (progetto `visibility-lab`, dominio visibility-lab.rankwit.ai) con `npm run deploy`, che costruisce `dist/` e la carica con wrangler. Servono le variabili d'ambiente `CLOUDFLARE_API_TOKEN` (permesso Cloudflare Pages: Edit) e `CLOUDFLARE_ACCOUNT_ID`.
 
 ### In alternativa: dentro il progetto di lab.rankwit.ai
 
