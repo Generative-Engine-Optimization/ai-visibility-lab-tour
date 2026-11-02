@@ -87,9 +87,11 @@ Le pagine usano il loro layout (`src/lab/layouts/Base.astro`), che contiene già
 
 Le pagine puntano a `/firenze`, `/eventi`, `/assets/rankwit-symbol.png`, `/assets/evento-rimini.mp4`, `/assets/evento-rimini-poster.jpg` e a try.rankwit.ai/report-gratuito.
 
-## Moduli
+## Moduli e lead
 
-I due moduli (Avvisami / proponi una città, e Contatti) mandano una richiesta `POST` con corpo JSON a `/api/richiesta` (costante `FORM_ENDPOINT` in `src/lab/scripts/tour.js`). Serve un endpoint gemello di `/api/candidatura` che risponda con uno stato 2xx: il modulo mostra la conferma solo in quel caso, altrimenti un errore con info@rankwit.ai.
+I due moduli (Avvisami / proponi una città, e Contatti) mandano una richiesta `POST` con corpo JSON a `/api/richiesta` (costante `FORM_ENDPOINT` in `src/lab/scripts/tour.js`). L'endpoint è la Pages Function `functions/api/richiesta.js`, caricata insieme al sito da `npm run deploy`: controlla i campi obbligatori e inoltra tutto al webhook di Make indicato nel secret `MAKE_WEBHOOK` del progetto Pages (`wrangler pages secret put MAKE_WEBHOOK --project-name visibility-lab`; in locale in `.dev.vars`, non nel repo). Se Make risponde 2xx il modulo mostra la conferma, altrimenti un errore con info@rankwit.ai.
+
+Campi che arrivano al webhook:
 
 | Campo | Avvisami / proposta | Contatti |
 |---|---|---|
@@ -102,26 +104,13 @@ I due moduli (Avvisami / proponi una città, e Contatti) mandano una richiesta `
 | `sito`, `telefono` | facoltativi | `telefono` facoltativo |
 | `consensoPrivacy` | `true` | `true` |
 | `pagina` | `"home"` o `"tappa-<id>"` | `"contatti"` |
-| `inviatoIl` | data ISO | data ISO |
+| `inviatoIl` | data ISO (browser) | data ISO (browser) |
+| `url`, `referrer`, `lingua`, `schermo` | pagina e provenienza, dal browser | idem |
+| `utm_*`, `gclid`, `fbclid`, `msclkid` | parametri della prima pagina aperta nella sessione | idem |
+| `consensoStatistiche`, `consensoMarketing` | scelta sui cookie, se fatta | idem |
+| `ricevutoIl`, `sito`, `ip`, `paese`, `regione`, `citta_ip`, `cap_ip`, `fusoOrario`, `userAgent`, `refererHttp` | aggiunti dal server (Cloudflare) | idem |
 
-Esempio minimo come route di Astro, accanto a quella di `/api/candidatura` (`src/pages/api/richiesta.ts`):
-
-```ts
-import type { APIRoute } from "astro";
-
-export const prerender = false;
-
-export const POST: APIRoute = async ({ request }) => {
-  const r = await request.json();
-  if (!r.nome || !r.email || r.consensoPrivacy !== true) return new Response("Dati mancanti", { status: 400 });
-  // qui: mandare la richiesta dove arrivano già le candidature (email, CRM, foglio)
-  return Response.json({ ok: true });
-};
-```
-
-Se invece le API sono Pages Function (cartella `functions/`), lo stesso codice va in `functions/api/richiesta.js` come `export async function onRequestPost({ request })`. Con l'adapter Cloudflare di Astro la cartella `functions/` viene ignorata, quindi conviene la route di Astro.
-
-Dopo un invio riuscito la pagina mette nel `dataLayer` l'evento `lab_richiesta` (con `tipo` e `citta`), utilizzabile in Tag Manager. I moduli inviano solo da visibility-lab.rankwit.ai, lab.rankwit.ai, `localhost`, `127.0.0.1` e `*.pages.dev`; altrove (per esempio nell'anteprima) invitano a scrivere a info@rankwit.ai.
+Dopo un invio riuscito la pagina mette nel `dataLayer` l'evento `lab_richiesta` (con `tipo` e `citta`), utilizzabile in Tag Manager. I moduli inviano solo da visibility-lab.rankwit.ai, lab.rankwit.ai, `localhost`, `127.0.0.1` e `*.pages.dev`; altrove (per esempio nell'anteprima su GitHub Pages) invitano a scrivere a info@rankwit.ai.
 
 ## Tracciamento e cookie
 

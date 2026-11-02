@@ -12,8 +12,23 @@ import { avviaConsenso } from "./consenso.js";
    e invitano a scrivere all'email. Dopo un invio riuscito parte l'evento "lab_richiesta" nel dataLayer. */
 const FORM_ENDPOINT = "/api/richiesta";
 const FORM_HOSTS = /^(visibility-lab\.rankwit\.ai|lab\.rankwit\.ai|localhost|127\.0\.0\.1)$|\.pages\.dev$/;
+/* contesto della visita, aggiunto a ogni richiesta: pagina, provenienza, parametri utm (anche della prima pagina aperta), consenso */
+function contesto(){
+  const c = { url: location.href, referrer: document.referrer || "", lingua: navigator.language || "", schermo: (screen && screen.width ? screen.width + "x" + screen.height : "") };
+  try {
+    const q = new URLSearchParams(location.search), utm = {};
+    q.forEach(function(v, k){ if (/^(utm_|gclid|fbclid|msclkid)/.test(k)) utm[k] = v; });
+    if (Object.keys(utm).length) sessionStorage.setItem("rw-utm", JSON.stringify(utm));
+    const primo = JSON.parse(sessionStorage.getItem("rw-utm") || "{}");
+    Object.keys(primo).forEach(function(k){ c[k] = primo[k]; });
+    const cons = JSON.parse(localStorage.getItem("rw-consenso") || "null");
+    if (cons){ c.consensoStatistiche = !!cons.statistiche; c.consensoMarketing = !!cons.marketing; }
+  } catch(e){}
+  return c;
+}
 function inviaRichiesta(rec){
   if (!FORM_ENDPOINT || !FORM_HOSTS.test(location.hostname)) return Promise.reject({ code: "no_db" });
+  rec = Object.assign({}, rec, contesto());
   return fetch(FORM_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(rec) })
     .then(function(r){
       if (!r.ok) throw { code: "http", status: r.status };
