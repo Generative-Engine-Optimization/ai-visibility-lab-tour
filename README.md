@@ -1,6 +1,6 @@
-# AI Visibility Lab · sito del tour (lab.rankwit.ai)
+# AI Visibility Lab · sito del tour (visibility-lab.rankwit.ai)
 
-Sito del roadshow di RankWit AI, fatto in Astro. Anteprima: https://generative-engine-optimization.github.io/ai-visibility-lab-tour/
+Sito del roadshow di RankWit AI, fatto in Astro, pubblicato su https://visibility-lab.rankwit.ai (Cloudflare Pages, progetto `ai-visibility-lab`). Anteprima: https://generative-engine-optimization.github.io/ai-visibility-lab-tour/
 
 ## Pagine
 
@@ -18,7 +18,7 @@ Tutto il testo è già nell'HTML: JavaScript serve solo per animazioni, menu, in
 
 ## SEO e GEO
 
-- Ogni pagina ha title, description, canonical (sempre su `https://lab.rankwit.ai`), Open Graph e immagine per i social (`public/og/`).
+- Ogni pagina ha title, description, canonical (sempre su `https://visibility-lab.rankwit.ai`), Open Graph e immagine per i social (`public/og/`).
 - Dati strutturati JSON-LD: `Organization`, `WebSite`, `WebPage`, `BreadcrumbList`; nella home `EventSeries` con tutte le tappe e `FAQPage`; in ogni tappa con data un `EducationEvent` (date, orari con fuso italiano, luogo, organizzatori, prezzo quando è noto).
 - Le tappe senza data hanno `noindex` e non sono nella sitemap: la pagina esiste (si apre da mappa e tabellone), ma data e sede non ci sono ancora.
 - Nell'HTML c'è solo lo stato del giorno della pubblicazione (in programma o conclusa): niente testi nascosti in contraddizione tra loro.
@@ -51,14 +51,19 @@ Node 22.12 o successivo.
 ```
 npm install
 npm run dev               # sviluppo su http://localhost:4321
-npm run build             # sito per lab.rankwit.ai in dist/
+npm run build             # sito per visibility-lab.rankwit.ai in dist/
+npm run deploy            # build e pubblicazione su Cloudflare Pages (servono CLOUDFLARE_API_TOKEN e CLOUDFLARE_ACCOUNT_ID)
 npm run build:anteprima   # copia per GitHub Pages (sotto /ai-visibility-lab-tour/, noindex, senza tracciamento)
 npm run og                # rigenera public/og (serve: npm i -D playwright && npx playwright install chromium)
 ```
 
-## Messa online su lab.rankwit.ai
+## Messa online
 
-Dal sito attuale risulta un progetto Astro su Cloudflare. Il modo più semplice è copiare questi file nel progetto esistente.
+Il sito è pubblicato su Cloudflare Pages (progetto `ai-visibility-lab`, dominio visibility-lab.rankwit.ai) con `npm run deploy`, che costruisce `dist/` e la carica con wrangler. Servono le variabili d'ambiente `CLOUDFLARE_API_TOKEN` (permesso Cloudflare Pages: Edit) e `CLOUDFLARE_ACCOUNT_ID`.
+
+### In alternativa: dentro il progetto di lab.rankwit.ai
+
+Dal sito attuale risulta un progetto Astro su Cloudflare. Se si vuole unire tutto lì, si copiano questi file nel progetto esistente (e si rimette `SITO` in `src/lab/lib/tour.js` su lab.rankwit.ai).
 
 **Prima, se nel progetto c'è già la versione precedente (la pagina unica)**, va tolta, altrimenti copre le pagine nuove:
 - cancellare `public/index.html` (Astro servirebbe quello al posto di `src/pages/index.astro`) e `public/og-tour.png`;
@@ -116,7 +121,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 Se invece le API sono Pages Function (cartella `functions/`), lo stesso codice va in `functions/api/richiesta.js` come `export async function onRequestPost({ request })`. Con l'adapter Cloudflare di Astro la cartella `functions/` viene ignorata, quindi conviene la route di Astro.
 
-Dopo un invio riuscito la pagina mette nel `dataLayer` l'evento `lab_richiesta` (con `tipo` e `citta`), utilizzabile in Tag Manager. I moduli inviano solo da lab.rankwit.ai, `localhost`, `127.0.0.1` e `*.pages.dev`; altrove (per esempio nell'anteprima) invitano a scrivere a info@rankwit.ai.
+Dopo un invio riuscito la pagina mette nel `dataLayer` l'evento `lab_richiesta` (con `tipo` e `citta`), utilizzabile in Tag Manager. I moduli inviano solo da visibility-lab.rankwit.ai, lab.rankwit.ai, `localhost`, `127.0.0.1` e `*.pages.dev`; altrove (per esempio nell'anteprima) invitano a scrivere a info@rankwit.ai.
 
 ## Tracciamento e cookie
 
@@ -141,7 +146,7 @@ Stato delle tappe, sitemap, `llms.txt` e dati strutturati si calcolano alla buil
 ## Da sapere
 
 - **Font Bukra**: il titolo della home usa Bukra, che non è su Google Fonts. Chi non ce l'ha vede Host Grotesk. Per mostrarlo a tutti serve il file `.woff2` con licenza web (istruzioni in `tour.css`, cerca "Bukra").
-- **Anteprima**: `.github/workflows/anteprima.yml` pubblica `npm run build:anteprima` su GitHub Pages a ogni modifica e una volta al giorno. Non serve per lab.rankwit.ai e si può togliere. Nell'anteprima i moduli non inviano nulla (inviano solo da lab.rankwit.ai, `localhost` e `*.pages.dev`).
+- **Anteprima**: `.github/workflows/anteprima.yml` pubblica `npm run build:anteprima` su GitHub Pages a ogni modifica e una volta al giorno. Non serve per lab.rankwit.ai e si può togliere. Nell'anteprima i moduli non inviano nulla (inviano solo da visibility-lab.rankwit.ai, `localhost` e `*.pages.dev`).
 - **Video**: la sezione "Com'è andata a Firenze" usa `/assets/evento-rimini.mp4` del sito attuale, come la versione precedente.
 
 ## Controlli dopo la pubblicazione

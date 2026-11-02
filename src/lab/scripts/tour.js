@@ -8,10 +8,10 @@ import { avviaConsenso } from "./consenso.js";
    I due moduli (Avvisami / proponi una città, e Contatti) mandano i dati in POST, come JSON,
    all'indirizzo FORM_ENDPOINT. Se il server risponde con uno stato 2xx il modulo mostra la conferma,
    altrimenti mostra un errore con l'indirizzo email. Campi inviati: vedi README.
-   Fuori da lab.rankwit.ai (per esempio sull'anteprima su GitHub Pages) i moduli non inviano nulla
+   Fuori da visibility-lab.rankwit.ai (per esempio sull'anteprima su GitHub Pages) i moduli non inviano nulla
    e invitano a scrivere all'email. Dopo un invio riuscito parte l'evento "lab_richiesta" nel dataLayer. */
 const FORM_ENDPOINT = "/api/richiesta";
-const FORM_HOSTS = /^(lab\.rankwit\.ai|localhost|127\.0\.0\.1)$|\.pages\.dev$/;
+const FORM_HOSTS = /^(visibility-lab\.rankwit\.ai|lab\.rankwit\.ai|localhost|127\.0\.0\.1)$|\.pages\.dev$/;
 function inviaRichiesta(rec){
   if (!FORM_ENDPOINT || !FORM_HOSTS.test(location.hostname)) return Promise.reject({ code: "no_db" });
   return fetch(FORM_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(rec) })

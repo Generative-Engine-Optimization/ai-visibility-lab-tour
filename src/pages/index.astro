@@ -8,12 +8,12 @@ import MapTour from "../lab/components/MapTour.astro";
 import Board from "../lab/components/Board.astro";
 import FormAvvisami from "../lab/components/FormAvvisami.astro";
 import FormContatti from "../lab/components/FormContatti.astro";
-import { TAPPE, stati, oggiRoma, MAIL } from "../lab/lib/tour.js";
+import { TAPPE, stati, oggiRoma, MAIL, SITO } from "../lab/lib/tour.js";
 import { FAQ } from "../lab/lib/faq.js";
 import { SESSIONI, REPORT, PASSI } from "../lab/lib/contenuti.js";
 import { LOGHI } from "../lab/lib/loghi.js";
 import { u } from "../lab/lib/url.js";
-import { ORGANIZZAZIONE, SITO_WEB, pagina, serie, faqPage } from "../lab/lib/seo.js";
+import { ORGANIZZAZIONE, SITO_WEB, TOUR_ID, pagina, serie, faqPage } from "../lab/lib/seo.js";
 
 const oggi = oggiRoma();
 const s = stati(oggi);
@@ -22,7 +22,7 @@ const descrizione = "Il tour di RankWit AI per hotel e destinazioni: formazione 
 const jsonld = [
   ORGANIZZAZIONE,
   SITO_WEB,
-  Object.assign(pagina({ path: "/", titolo, descrizione, immagine: "https://lab.rankwit.ai/og/tour.png" }), { about: { "@id": "https://lab.rankwit.ai/#tour" } }),
+  Object.assign(pagina({ path: "/", titolo, descrizione, immagine: SITO + "/og/tour.png" }), { about: { "@id": TOUR_ID } }),
   serie(TAPPE, true),
   faqPage(FAQ, "/")
 ];

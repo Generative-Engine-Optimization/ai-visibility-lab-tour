@@ -3,7 +3,7 @@ import sitemap from "@astrojs/sitemap";
 import { TAPPE, ALIAS } from "./src/lab/lib/tour.js";
 
 /* ANTEPRIMA=1 costruisce la copia per GitHub Pages (sotto /ai-visibility-lab-tour/, non indicizzata).
-   Senza variabile si costruisce il sito vero per lab.rankwit.ai. */
+   Senza variabile si costruisce il sito vero per visibility-lab.rankwit.ai. */
 const ANTEPRIMA = process.env.ANTEPRIMA === "1";
 const BASE = ANTEPRIMA ? "/ai-visibility-lab-tour" : "";
 
@@ -14,7 +14,7 @@ const SENZA_SITEMAP = TAPPE.filter((t) => !t.dataISO).map((t) => `/tappe/${t.id}
 const REDIRECTS = Object.fromEntries(Object.entries(ALIAS).map(([vecchio, id]) => [`/tappe/${vecchio}/`, `${BASE}/tappe/${id}/`]));
 
 export default defineConfig({
-  site: ANTEPRIMA ? "https://generative-engine-optimization.github.io" : "https://lab.rankwit.ai",
+  site: ANTEPRIMA ? "https://generative-engine-optimization.github.io" : "https://visibility-lab.rankwit.ai",
   base: BASE || "/",
   trailingSlash: "always",
   build: { format: "directory" },

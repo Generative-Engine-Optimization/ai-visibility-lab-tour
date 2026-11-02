@@ -1,5 +1,5 @@
 /* Dati strutturati (schema.org, JSON-LD) condivisi dalle pagine.
-   Gli indirizzi puntano sempre al sito vero (lab.rankwit.ai), anche nell'anteprima. */
+   Gli indirizzi puntano sempre al sito vero (visibility-lab.rankwit.ai), anche nell'anteprima. */
 import { SITO, MAIL, dove, low } from "./tour.js";
 import { ogTappa } from "./og.js";
 

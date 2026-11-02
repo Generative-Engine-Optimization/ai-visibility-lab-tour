@@ -2,7 +2,7 @@
    Per aggiungere o modificare una tappa basta cambiare l'elenco TAPPE qui sotto. */
 
 export const MAIL = "info@rankwit.ai";
-export const SITO = "https://lab.rankwit.ai";
+export const SITO = "https://visibility-lab.rankwit.ai";
 
 /* TAPPE, in ordine di percorso.
    - dataISO: giorno della tappa, AAAA-MM-GG. Dal giorno dopo la tappa risulta "Conclusa" da sola.

@@ -1,4 +1,4 @@
-# lab.rankwit.ai
+# visibility-lab.rankwit.ai
 # Tutte le pagine sono aperte ai motori di ricerca e agli assistenti AI.
 # Le pagine delle tappe senza data (data e sede da definire) hanno <meta name="robots" content="noindex"> e non sono nella sitemap.
 
@@ -21,4 +21,4 @@ User-agent: CCBot
 Allow: /
 Disallow: /api/
 
-Sitemap: https://lab.rankwit.ai/sitemap-index.xml
+Sitemap: https://visibility-lab.rankwit.ai/sitemap-index.xml

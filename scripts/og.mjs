@@ -66,13 +66,13 @@ const page = (body) => `<!doctype html><html lang="it"><head><meta charset="utf-
 const brand = `<div class="brand">${MARK}<span>AI Visibility Lab · RankWit AI</span></div>`;
 
 const immagini = [
-  { nome: "tour", html: page(`<div class="txt">${brand}<h1>L'AI sceglie<br>pochi nomi.<em>Ti mostriamo come<br>essere tra questi.</em></h1><p class="sub">Il tour per hotel e destinazioni, una tappa alla volta.</p><p class="url">lab.rankwit.ai</p></div>${pins()}`) },
-  { nome: "hotel", html: page(`<div class="txt">${brand}<h1>L'AI descrive<br>il tuo hotel.<em>Con i dati degli altri.</em></h1><p class="sub">Il Lab per gli hotel: cosa dicono gli assistenti AI e cosa cambiare sul sito.</p><p class="url">lab.rankwit.ai/hotel</p></div>${pins()}`) },
-  { nome: "destinations", html: page(`<div class="txt">${brand}<h1>L'AI parla del<br>tuo territorio.<em>Spesso sbagliando.</em></h1><p class="sub">Il Lab per DMO, consorzi, comuni e uffici turistici.</p><p class="url">lab.rankwit.ai/destinations</p></div>${pins()}`) }
+  { nome: "tour", html: page(`<div class="txt">${brand}<h1>L'AI sceglie<br>pochi nomi.<em>Ti mostriamo come<br>essere tra questi.</em></h1><p class="sub">Il tour per hotel e destinazioni, una tappa alla volta.</p><p class="url">visibility-lab.rankwit.ai</p></div>${pins()}`) },
+  { nome: "hotel", html: page(`<div class="txt">${brand}<h1>L'AI descrive<br>il tuo hotel.<em>Con i dati degli altri.</em></h1><p class="sub">Il Lab per gli hotel: cosa dicono gli assistenti AI e cosa cambiare sul sito.</p><p class="url">visibility-lab.rankwit.ai/hotel</p></div>${pins()}`) },
+  { nome: "destinations", html: page(`<div class="txt">${brand}<h1>L'AI parla del<br>tuo territorio.<em>Spesso sbagliando.</em></h1><p class="sub">Il Lab per DMO, consorzi, comuni e uffici turistici.</p><p class="url">visibility-lab.rankwit.ai/destinations</p></div>${pins()}`) }
 ].concat(TAPPE.map((t) => {
   const size = Math.min(132, Math.floor(560 / (t.citta.length * 0.56)));
   const dettaglio = t.intro ? t.edizione + " · " + t.sedeBreve : (t.collab ? "In collaborazione con " + t.collab : "Data e sede da definire");
-  return { nome: t.id, html: page(`<div class="txt">${brand}<h1 class="city" style="font-size:${size}px">${esc(t.citta)}</h1><p class="when">${t.dataISO ? esc(t.data) : "Prossimamente"}</p><p class="sub">${esc(dettaglio)}</p><p class="url">lab.rankwit.ai/tappe/${t.id}</p></div>${pins(t.id)}`) };
+  return { nome: t.id, html: page(`<div class="txt">${brand}<h1 class="city" style="font-size:${size}px">${esc(t.citta)}</h1><p class="when">${t.dataISO ? esc(t.data) : "Prossimamente"}</p><p class="sub">${esc(dettaglio)}</p><p class="url">visibility-lab.rankwit.ai/tappe/${t.id}</p></div>${pins(t.id)}`) };
 }));
 
 const out = join(root, "public/og");
