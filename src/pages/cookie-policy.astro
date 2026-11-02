@@ -1,0 +1,112 @@
+---
+/* pagina statica anche se il progetto è in modalità server */
+export const prerender = true;
+/* Cookie policy: cookie tecnici, strumenti caricati da Google Tag Manager dopo il consenso, come cambiare idea.
+   Tenere l'elenco allineato ai tag configurati nel contenitore GTM-PPVD9VLM. */
+import Base from "../lab/layouts/Base.astro";
+import { SITO } from "../lab/lib/tour.js";
+import { TITOLARE, AGGIORNATO } from "../lab/lib/legale.js";
+import { u } from "../lab/lib/url.js";
+import { ORGANIZZAZIONE, SITO_WEB, pagina, briciole } from "../lab/lib/seo.js";
+
+const path = "/cookie-policy/";
+const titolo = "Cookie policy · AI Visibility Lab";
+const descrizione = "Quali cookie e strumenti usa lab.rankwit.ai: quelli tecnici, quelli di statistica e marketing attivi solo con il consenso, e come cambiare la scelta.";
+const jsonld = [
+  ORGANIZZAZIONE,
+  SITO_WEB,
+  Object.assign(pagina({ path, titolo, descrizione }), { breadcrumb: { "@id": SITO + path + "#briciole" } }),
+  Object.assign(briciole([{ nome: "AI Visibility Lab", path: "/" }, { nome: "Cookie policy", path }]), { "@id": SITO + path + "#briciole" })
+];
+const T = TITOLARE;
+
+const STATISTICHE = [
+  ["_ga", "Google Analytics 4", "Distingue un visitatore dall'altro", "2 anni"],
+  ["_ga_*", "Google Analytics 4", "Tiene insieme le pagine della stessa visita", "2 anni"],
+  ["_clck", "Microsoft Clarity", "Collega le tue visite a un identificativo di Clarity", "1 anno"],
+  ["_clsk", "Microsoft Clarity", "Unisce le pagine aperte di seguito in una sola registrazione", "1 giorno"],
+  ["CLID", "Microsoft Clarity (clarity.ms)", "Riconosce il visitatore nel progetto Clarity", "1 anno"],
+  ["MUID", "Microsoft (clarity.ms, bing.com)", "Identificativo di Microsoft tra i suoi servizi", "13 mesi"],
+  ["ANONCHK, SM", "Microsoft Clarity (clarity.ms)", "Controlli tecnici di sessione di Microsoft", "10 minuti / durata della visita"]
+];
+const MARKETING = [
+  ["_fbp", "Meta Platforms (pixel di Meta)", "Distingue il tuo browser, così l'apertura del modulo e il clic su un annuncio contano come una sola visita", "3 mesi"],
+  ["_fbc", "Meta Platforms (pixel di Meta)", "Conserva l'identificativo dell'annuncio da cui sei arrivato; solo se arrivi da un annuncio", "3 mesi"],
+  ["fr", "Meta (facebook.com)", "Cookie pubblicitario di Meta; molti browser lo bloccano come cookie di terze parti", "3 mesi"]
+];
+const riga = (r) => `<tr><td data-label="Nome"><code>${r[0]}</code></td><td data-label="Chi lo imposta">${r[1]}</td><td data-label="A cosa serve">${r[2]}</td><td data-label="Durata">${r[3]}</td></tr>`;
+const tabella = (righe) => `<div class="tbl"><table><thead><tr><th>Nome</th><th>Chi lo imposta</th><th>A cosa serve</th><th>Durata</th></tr></thead><tbody>${righe.map(riga).join("")}</tbody></table></div>`;
+---
+<Base titolo={titolo} descrizione={descrizione} path={path} jsonld={jsonld}>
+<main id="legale">
+  <section class="t-hero on-night legal-hero"><div class="wrap">
+    <a class="back" href={u("/")}><span aria-hidden="true">←</span> Torna alla home</a>
+    <p class="eyebrow">Cookie</p>
+    <h1 class="page-h1">Cookie policy</h1>
+    <p class="lead">Quali cookie e strumenti simili usa questo sito, cosa fanno e come cambiare la tua scelta. Gli strumenti di statistica e di marketing partono solo se li accetti.</p>
+    <p class="legal-meta" style="margin-top:14px;color:var(--lilac)">Ultimo aggiornamento: {AGGIORNATO} · Linee guida del Garante del 10 giugno 2021</p>
+  </div></section>
+
+  <section class="band"><div class="wrap"><div class="legal-body">
+    <section id="preferenze">
+      <h2>Cambia la tua scelta</h2>
+      <p>Puoi accettare, rifiutare o scegliere per categoria in qualsiasi momento. La scelta resta memorizzata nel browser per 6 mesi: dopo, te lo chiediamo di nuovo.</p>
+      <p><a class="btn btn-primary" href="#preferenze" data-ck-apri>Apri le preferenze cookie <span class="arr" aria-hidden="true">→</span></a></p>
+      <p>Lo stesso collegamento è nel piè di pagina di ogni pagina. Puoi anche cancellare o bloccare i cookie dalle impostazioni del browser: le istruzioni di <a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener">Chrome ↗</a>, <a href="https://support.apple.com/it-it/guide/safari/sfri11471/mac" target="_blank" rel="noopener">Safari ↗</a>, <a href="https://support.mozilla.org/it/kb/Gestione%20dei%20cookie" target="_blank" rel="noopener">Firefox ↗</a> e <a href="https://support.microsoft.com/it-it/microsoft-edge/eliminare-i-cookie-in-microsoft-edge-63947406-6ac4-7dc0-cbbd-c8b27e8f7f7c" target="_blank" rel="noopener">Edge ↗</a>.</p>
+    </section>
+
+    <section id="cosa-sono">
+      <h2>Cosa sono</h2>
+      <p>I cookie sono piccoli file che un sito salva nel browser per riconoscerlo alle visite successive. Qui chiamiamo «cookie» anche gli strumenti simili, come la memoria locale del browser (localStorage) e i pixel. Li dividiamo in tre categorie: necessari, statistiche e marketing.</p>
+    </section>
+
+    <section id="necessari">
+      <h2>Necessari</h2>
+      <p>Servono a far funzionare il sito e non richiedono consenso. Sono impostati da noi.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Nome</th><th>Chi lo imposta</th><th>A cosa serve</th><th>Durata</th></tr></thead>
+        <tbody>
+          <tr><td data-label="Nome"><code>rw-consenso</code></td><td data-label="Chi lo imposta">lab.rankwit.ai (memoria locale del browser)</td><td data-label="A cosa serve">Ricorda se hai accettato o rifiutato i cookie di statistica e marketing, e quando</td><td data-label="Durata">6 mesi</td></tr>
+        </tbody>
+      </table></div>
+      <p>Il sito non usa altri cookie propri: non ci sono aree riservate, carrelli o preferenze da ricordare. Il codice di Google Tag Manager, che gestisce gli strumenti elencati sotto, viene caricato all'apertura della pagina ma non imposta cookie: attiva Google Analytics, Clarity e il pixel di Meta solo dopo che hai dato il consenso, e comunica a Google la tua scelta con il «Consent Mode».</p>
+    </section>
+
+    <section id="statistiche">
+      <h2>Statistiche</h2>
+      <p>Solo con il tuo consenso. Ci dicono quante persone visitano il sito, da dove arrivano, quali pagine leggono e dove si fermano. Google Analytics usa l'indirizzo IP troncato; Clarity registra come ti muovi nella pagina (clic, scorrimento) senza il contenuto dei campi dei moduli.</p>
+      <Fragment set:html={tabella(STATISTICHE)} />
+      <p>Informative: <a href="https://policies.google.com/privacy?hl=it" target="_blank" rel="noopener">Google ↗</a>, <a href="https://privacy.microsoft.com/it-it/privacystatement" target="_blank" rel="noopener">Microsoft ↗</a>.</p>
+    </section>
+
+    <section id="marketing">
+      <h2>Marketing</h2>
+      <p>Solo con il tuo consenso. Il pixel di Meta ci permette di sapere se chi vede un nostro annuncio su Facebook o Instagram poi apre questo sito o compila un modulo, e di mostrare gli annunci alle persone interessate. Meta può usare questi dati anche per sé, secondo la sua informativa.</p>
+      <Fragment set:html={tabella(MARKETING)} />
+      <p>Informativa: <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Meta ↗</a>.</p>
+    </section>
+
+    <section id="terzi">
+      <h2>Altri servizi esterni</h2>
+      <ul>
+        <li><b>Google Fonts</b> fornisce i caratteri del sito. Non imposta cookie, ma riceve il tuo indirizzo IP quando la pagina li scarica.</li>
+        <li><b>Video e immagini</b> della prima edizione sono ospitati su lab.rankwit.ai, cioè da noi, senza cookie.</li>
+        <li>I collegamenti verso siti esterni (LinkedIn, siti dei partner, giornali) portano a pagine con le loro regole sui cookie.</li>
+      </ul>
+    </section>
+
+    <section id="titolare">
+      <h2>Chi tratta i dati</h2>
+      <div class="box">
+        <b>{T.nome}</b>
+        <span>{T.indirizzo}</span>
+        <span>P. IVA e Codice Fiscale {T.piva}</span>
+        <span>Referente per la protezione dei dati: {T.referente}, <a href={"mailto:" + T.emailReferente}>{T.emailReferente}</a></span>
+        <span>Email: <a href={"mailto:" + T.email}>{T.email}</a></span>
+      </div>
+      <p>Per tutto il resto, dai diritti ai tempi di conservazione, vale l'<a href={u("/privacy/")}>informativa sulla privacy</a>.</p>
+      <p class="legal-meta">Versione del {AGGIORNATO}. Se aggiungiamo o togliamo uno strumento, aggiorniamo questa pagina e ti chiediamo di nuovo il consenso.</p>
+    </section>
+  </div></div></section>
+</main>
+</Base>

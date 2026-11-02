@@ -3,6 +3,7 @@
 import "../styles/tour.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import CookieBanner from "../components/CookieBanner.astro";
 import { SITO, TAPPE, ALIAS, oggiRoma } from "../lib/tour.js";
 import { grafo } from "../lib/seo.js";
 import { ANTEPRIMA } from "../lib/url.js";
@@ -22,6 +23,9 @@ const canonico = SITO + path;
 const og = SITO + immagine;
 const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
 const idTappe = TAPPE.map((t) => t.id);
+/* Google Tag Manager: il contenitore del sito. Gli strumenti di statistica e marketing vanno configurati lì
+   e partono solo dopo il consenso (Consent Mode v2: vedi lo script qui sotto e src/lab/scripts/consenso.js). */
+const GTM_ID = "GTM-PPVD9VLM";
 ---
 <!doctype html>
 <html lang="it" data-base={base} data-oggi={oggiRoma()}>
@@ -65,25 +69,32 @@ const idTappe = TAPPE.map((t) => t.id);
     })();
   </script>
 )}
+{/* Consenso (Google Consent Mode v2): tutto negato finché il visitatore non sceglie dal banner.
+    Una scelta già fatta (memoria locale "rw-consenso", valida 6 mesi) viene riapplicata prima che parta Tag Manager. */}
+<script is:inline>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied', functionality_storage: 'granted', security_storage: 'granted', wait_for_update: 500 });
+  (function(){
+    try {
+      var c = JSON.parse(localStorage.getItem('rw-consenso'));
+      if (!c || !c.data || Date.now() - Date.parse(c.data) > 180 * 864e5) return;
+      gtag('consent', 'update', { analytics_storage: c.statistiche ? 'granted' : 'denied', ad_storage: c.marketing ? 'granted' : 'denied', ad_user_data: c.marketing ? 'granted' : 'denied', ad_personalization: c.marketing ? 'granted' : 'denied' });
+      dataLayer.push({ event: 'consenso', consenso_statistiche: !!c.statistiche, consenso_marketing: !!c.marketing });
+    } catch(e){}
+  })();
+  gtag('js', new Date());
+</script>
 {!ANTEPRIMA && (
-  /* Tracciamento: gli stessi strumenti del sito attuale (Google Tag Manager, Google Analytics 4, Microsoft Clarity).
-     Si attiva solo su lab.rankwit.ai. Il pixel di Meta lo carica Tag Manager. */
-  <script is:inline>
-    (function(){
-      if (location.hostname !== "lab.rankwit.ai") return;
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PN8TJ9QX');
-      var g = document.createElement('script'); g.async = true; g.src = 'https://www.googletagmanager.com/gtag/js?id=G-3B6T2Q6QEW'; document.head.appendChild(g);
-      window.dataLayer = window.dataLayer || []; window.gtag = function(){ window.dataLayer.push(arguments); }; window.gtag('js', new Date()); window.gtag('config', 'G-3B6T2Q6QEW');
-      (function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","y0sqnp0606");
-    })();
-  </script>
+  /* Google Tag Manager. Non si carica nell'anteprima su GitHub Pages. */
+  <script async src={`https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`}></script>
 )}
 </head>
 <body>
-{!ANTEPRIMA && <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PN8TJ9QX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>}
 <Header attuale={attuale} />
 <slot />
 <Footer />
+<CookieBanner />
 <script>
   import "../scripts/tour.js";
 </script>

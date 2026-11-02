@@ -1,0 +1,131 @@
+---
+/* pagina statica anche se il progetto è in modalità server */
+export const prerender = true;
+/* Informativa sulla privacy (art. 13 e 14 del Regolamento UE 2016/679). */
+import Base from "../lab/layouts/Base.astro";
+import { SITO } from "../lab/lib/tour.js";
+import { TITOLARE, AGGIORNATO } from "../lab/lib/legale.js";
+import { u } from "../lab/lib/url.js";
+import { ORGANIZZAZIONE, SITO_WEB, pagina, briciole } from "../lab/lib/seo.js";
+
+const path = "/privacy/";
+const titolo = "Informativa sulla privacy · AI Visibility Lab";
+const descrizione = "Come RankWit tratta i dati personali di chi visita lab.rankwit.ai e compila i moduli del tour: titolare, finalità, conservazione, destinatari e diritti.";
+const jsonld = [
+  ORGANIZZAZIONE,
+  SITO_WEB,
+  Object.assign(pagina({ path, titolo, descrizione }), { breadcrumb: { "@id": SITO + path + "#briciole" } }),
+  Object.assign(briciole([{ nome: "AI Visibility Lab", path: "/" }, { nome: "Privacy", path }]), { "@id": SITO + path + "#briciole" })
+];
+const T = TITOLARE;
+---
+<Base titolo={titolo} descrizione={descrizione} path={path} jsonld={jsonld}>
+<main id="legale">
+  <section class="t-hero on-night legal-hero"><div class="wrap">
+    <a class="back" href={u("/")}><span aria-hidden="true">←</span> Torna alla home</a>
+    <p class="eyebrow">Privacy</p>
+    <h1 class="page-h1">Informativa sulla privacy</h1>
+    <p class="lead">Come trattiamo i dati personali di chi visita questo sito e compila i moduli dell'AI Visibility Lab. Scritta per essere letta, non solo per essere pubblicata.</p>
+    <p class="legal-meta" style="margin-top:14px;color:var(--lilac)">Ultimo aggiornamento: {AGGIORNATO} · Regolamento UE 2016/679 (GDPR) e d.lgs. 196/2003</p>
+  </div></section>
+
+  <section class="band"><div class="wrap"><div class="legal-body">
+    <section id="titolare">
+      <h2>Chi tratta i tuoi dati</h2>
+      <div class="box">
+        <b>{T.nome}</b>
+        <span>{T.indirizzo}</span>
+        <span>P. IVA e Codice Fiscale {T.piva}</span>
+        <span>Email: <a href={"mailto:" + T.email}>{T.email}</a></span>
+      </div>
+      <p>Il titolare del trattamento è {T.nome} (di seguito «RankWit» o «noi»), che gestisce il sito lab.rankwit.ai e organizza l'AI Visibility Lab.</p>
+      <p><b>Referente per la protezione dei dati:</b> {T.referente}, <a href={"mailto:" + T.emailReferente}>{T.emailReferente}</a>. Per qualsiasi domanda sui tuoi dati o per esercitare i tuoi diritti puoi scrivere a questo indirizzo o a <a href={"mailto:" + T.email}>{T.email}</a>.</p>
+    </section>
+
+    <section id="dati">
+      <h2>Quali dati trattiamo e perché</h2>
+      <h3>1. Navigazione sul sito</h3>
+      <p>Quando apri una pagina, i sistemi che fanno funzionare il sito registrano dati tecnici: indirizzo IP, tipo di browser e dispositivo, pagina richiesta, data e ora, pagina di provenienza. Servono a far arrivare le pagine al tuo browser, a proteggere il sito da abusi e a risolvere eventuali problemi.</p>
+      <p><b>Base giuridica:</b> legittimo interesse a far funzionare il sito in sicurezza (art. 6, par. 1, lett. f). Questi dati non vengono usati per identificarti e restano nei registri del fornitore di hosting per il tempo tecnico necessario.</p>
+
+      <h3>2. Modulo «Avvisami o proponi una città»</h3>
+      <p>Raccogliamo nome e cognome, email, nome e tipo della struttura, la città che scegli o proponi e, se li indichi, sito web e telefono. Li usiamo per avvisarti quando apriamo le candidature della tappa che hai scelto, per valutare le città proposte e per organizzare le tappe future.</p>
+      <p><b>Base giuridica:</b> esecuzione della tua richiesta (art. 6, par. 1, lett. b). Il telefono e il sito sono facoltativi: se li lasci, li usiamo solo per questa richiesta.</p>
+
+      <h3>3. Modulo contatti</h3>
+      <p>Raccogliamo nome e cognome, email, argomento e messaggio e, se li indichi, struttura o organizzazione e telefono. Li usiamo solo per risponderti.</p>
+      <p><b>Base giuridica:</b> esecuzione della tua richiesta (art. 6, par. 1, lett. b).</p>
+
+      <h3>4. Email</h3>
+      <p>Se ci scrivi a {T.email} o a un altro indirizzo RankWit, trattiamo i dati che ci mandi per risponderti e gestire la richiesta. Base giuridica: esecuzione della tua richiesta (art. 6, par. 1, lett. b).</p>
+
+      <h3>5. Statistiche e marketing (cookie)</h3>
+      <p>Solo se accetti dal banner, usiamo strumenti di statistica (Google Analytics, Microsoft Clarity) e di marketing (pixel di Meta) che leggono cookie e identificativi del tuo browser. Servono a capire come viene usato il sito e a misurare le campagne su Facebook e Instagram. Senza il tuo consenso non si attivano.</p>
+      <p><b>Base giuridica:</b> consenso (art. 6, par. 1, lett. a), che puoi revocare in ogni momento da «Preferenze cookie» nel piè di pagina. Tutti i dettagli sono nella <a href={u("/cookie-policy/")}>cookie policy</a>.</p>
+
+      <h3>Cosa non facciamo</h3>
+      <ul>
+        <li>Non vendiamo né cediamo i tuoi dati a terzi per i loro scopi.</li>
+        <li>Non prendiamo decisioni automatizzate che producano effetti giuridici su di te.</li>
+        <li>Non ti mandiamo newsletter o comunicazioni commerciali diverse da quelle che hai chiesto. Se un giorno vorremo farlo, ti chiederemo prima un consenso separato.</li>
+      </ul>
+    </section>
+
+    <section id="obbligatori">
+      <h2>Dati obbligatori e facoltativi</h2>
+      <p>Nei moduli, i campi segnati come obbligatori servono per dare seguito alla richiesta: senza, non possiamo avvisarti o risponderti. I campi segnati come facoltativi puoi lasciarli vuoti. L'accettazione dei cookie di statistica e marketing è sempre libera: se la rifiuti, il sito funziona allo stesso modo.</p>
+    </section>
+
+    <section id="destinatari">
+      <h2>A chi passano i tuoi dati</h2>
+      <p>I dati sono trattati dal personale di RankWit autorizzato e da fornitori che lavorano per noi come responsabili del trattamento, secondo contratti conformi all'art. 28 del GDPR:</p>
+      <ul>
+        <li><b>Hosting e sicurezza del sito:</b> Cloudflare, Inc.</li>
+        <li><b>Gestione delle richieste:</b> i sistemi di posta elettronica, di gestione dei contatti e di automazione che usiamo per ricevere e lavorare i moduli (ad esempio Google Workspace e Make).</li>
+        <li><b>Statistiche e marketing, solo con il tuo consenso:</b> Google Ireland Ltd (Google Tag Manager e Google Analytics), Microsoft Ireland Operations Ltd (Clarity), Meta Platforms Ireland Ltd (pixel di Meta). Questi fornitori trattano i dati anche per conto proprio, secondo le loro informative, indicate nella <a href={u("/cookie-policy/")}>cookie policy</a>.</li>
+      </ul>
+      <p>Per le tappe organizzate con un partner (ad esempio ANCI Toscana), nome, struttura e contatti possono essere condivisi con il partner solo se ti candidi a quella tappa e nella misura necessaria a organizzarla: lo indichiamo nel modulo di candidatura. I dati possono essere comunicati ad autorità pubbliche quando lo richiede la legge.</p>
+    </section>
+
+    <section id="trasferimenti">
+      <h2>Trasferimenti fuori dall'Unione europea</h2>
+      <p>Alcuni fornitori (Cloudflare, Google, Microsoft, Meta) hanno sede o server negli Stati Uniti. I trasferimenti avvengono sulla base della decisione di adeguatezza della Commissione europea per il quadro EU-US Data Privacy Framework, per i fornitori che vi aderiscono, e in ogni caso delle clausole contrattuali standard approvate dalla Commissione, con le garanzie aggiuntive previste dai fornitori. Puoi chiederci una copia delle garanzie scrivendo a {T.emailReferente}.</p>
+    </section>
+
+    <section id="conservazione">
+      <h2>Per quanto tempo li teniamo</h2>
+      <dl>
+        <div><dt>Avvisami o proposta</dt><dd>Fino alla tappa a cui si riferisce la richiesta e comunque non oltre 24 mesi dall'invio, salvo che tu chieda prima la cancellazione.</dd></div>
+        <div><dt>Contatti ed email</dt><dd>Per il tempo necessario a rispondere e, per eventuali seguiti, fino a 24 mesi dall'ultimo scambio.</dd></div>
+        <div><dt>Candidature e partecipazione</dt><dd>Se partecipi a una tappa, i dati necessari a fatture e documenti contabili restano per 10 anni, come prevede la legge.</dd></div>
+        <div><dt>Registri tecnici</dt><dd>Per il tempo tecnico del fornitore di hosting, di regola pochi giorni.</dd></div>
+        <div><dt>Cookie e scelta sul consenso</dt><dd>Durate indicate nella <a href={u("/cookie-policy/")}>cookie policy</a>; la tua scelta sul banner resta memorizzata per 6 mesi.</dd></div>
+      </dl>
+    </section>
+
+    <section id="diritti">
+      <h2>I tuoi diritti</h2>
+      <p>In qualsiasi momento puoi chiederci:</p>
+      <ul>
+        <li>di sapere quali dati abbiamo su di te e di riceverne una copia (accesso);</li>
+        <li>di correggerli (rettifica) o di cancellarli;</li>
+        <li>di limitare il trattamento o di opporti a un trattamento basato sul legittimo interesse;</li>
+        <li>di ricevere i dati che ci hai dato in un formato leggibile da una macchina (portabilità);</li>
+        <li>di revocare un consenso dato: la revoca non tocca quanto fatto prima.</li>
+      </ul>
+      <p>Scrivi a <a href={"mailto:" + T.emailReferente}>{T.emailReferente}</a> o a <a href={"mailto:" + T.email}>{T.email}</a>: rispondiamo entro un mese. Se pensi che il trattamento violi la legge, puoi presentare reclamo al Garante per la protezione dei dati personali (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener">garanteprivacy.it ↗</a>) o rivolgerti all'autorità giudiziaria.</p>
+    </section>
+
+    <section id="minori">
+      <h2>Minori</h2>
+      <p>Il sito e i moduli sono rivolti a professionisti del turismo. Non raccogliamo consapevolmente dati di minori di 14 anni: se ci accorgiamo di averne ricevuti, li cancelliamo.</p>
+    </section>
+
+    <section id="modifiche">
+      <h2>Se cambia qualcosa</h2>
+      <p>Se cambiano gli strumenti che usiamo o il modo in cui trattiamo i dati, aggiorniamo questa pagina e la data in testa. Per le modifiche che contano davvero, lo scriviamo in modo evidente sul sito.</p>
+      <p class="legal-meta">Versione del {AGGIORNATO}.</p>
+    </section>
+  </div></div></section>
+</main>
+</Base>

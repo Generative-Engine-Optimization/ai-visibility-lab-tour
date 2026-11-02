@@ -9,6 +9,7 @@ Sito del roadshow di RankWit AI, fatto in Astro. Anteprima: https://generative-e
 | `/` | Home: mappa, tabellone delle tappe, video, report, programma, partner, domande frequenti, moduli |
 | `/hotel/` | Il Lab per gli hotel |
 | `/destinations/` | Il Lab per le destinazioni |
+| `/privacy/`, `/cookie-policy/` | Informativa sulla privacy e cookie policy (dati del titolare in `src/lab/lib/legale.js`) |
 | `/tappe/<id>/` | Una pagina per ogni tappa (`/tappe/firenze/`, `/tappe/pistoia/`…) |
 | `/llms.txt` | Riassunto del sito per gli assistenti AI, generato a ogni build |
 | `/sitemap-index.xml` | Sitemap, generata a ogni build |
@@ -32,9 +33,11 @@ src/lab/lib/tour.js        le tappe (per aggiungerne o modificarne una si cambia
 src/lab/lib/faq.js         domande frequenti (pagina e dati strutturati)
 src/lab/lib/contenuti.js   testi usati in più pagine (sessioni, report, passi)
 src/lab/lib/seo.js         dati strutturati
-src/lab/components/        testata, footer, mappa, tabellone, moduli
+src/lab/lib/legale.js      titolare del trattamento e data delle informative
+src/lab/components/        testata, footer, mappa, tabellone, moduli, banner dei cookie
 src/lab/layouts/Base.astro <head> comune: SEO, JSON-LD, tracciamento
 src/lab/scripts/tour.js    JavaScript del browser
+src/lab/scripts/consenso.js banner dei cookie e Consent Mode
 src/lab/styles/tour.css    stili
 public/assets/             mappa dell'Italia e loghi
 public/og/                 immagini per i social (1200×630)
@@ -77,7 +80,7 @@ Le pagine usano il loro layout (`src/lab/layouts/Base.astro`), che contiene già
 
 ### Pagine e file del sito attuale da non togliere
 
-Le pagine puntano a `/firenze`, `/eventi`, `/privacy`, `/cookie-policy`, `/assets/rankwit-symbol.png`, `/assets/evento-rimini.mp4`, `/assets/evento-rimini-poster.jpg` e a try.rankwit.ai/report-gratuito.
+Le pagine puntano a `/firenze`, `/eventi`, `/assets/rankwit-symbol.png`, `/assets/evento-rimini.mp4`, `/assets/evento-rimini-poster.jpg` e a try.rankwit.ai/report-gratuito.
 
 ## Moduli
 
@@ -115,9 +118,13 @@ Se invece le API sono Pages Function (cartella `functions/`), lo stesso codice v
 
 Dopo un invio riuscito la pagina mette nel `dataLayer` l'evento `lab_richiesta` (con `tipo` e `citta`), utilizzabile in Tag Manager. I moduli inviano solo da lab.rankwit.ai, `localhost`, `127.0.0.1` e `*.pages.dev`; altrove (per esempio nell'anteprima) invitano a scrivere a info@rankwit.ai.
 
-## Tracciamento
+## Tracciamento e cookie
 
-Gli stessi strumenti del sito attuale: Google Tag Manager `GTM-PN8TJ9QX`, Google Analytics 4 `G-3B6T2Q6QEW`, Microsoft Clarity `y0sqnp0606` (il pixel di Meta lo carica Tag Manager). Sono in `src/lab/layouts/Base.astro` e si attivano solo su lab.rankwit.ai.
+Google Tag Manager `GTM-PPVD9VLM` (costante `GTM_ID` in `src/lab/layouts/Base.astro`). Google Analytics, Microsoft Clarity e il pixel di Meta vanno configurati nel contenitore, con i tag che partono solo quando il consenso è dato: le pagine impostano il Consent Mode v2 (`gtag('consent','default')` tutto negato) prima di caricare Tag Manager e lo aggiornano con la scelta del visitatore.
+
+Il banner dei cookie (`src/lab/components/CookieBanner.astro`, logica in `src/lab/scripts/consenso.js`) ha Accetta tutti, Rifiuta e Personalizza (statistiche, marketing). La scelta resta in `localStorage` (`rw-consenso`) per 6 mesi e si riapre da «Preferenze cookie» nel footer. Oltre a `gtag('consent','update', …)`, dopo ogni scelta (e a ogni pagina, se c'è già una scelta) nel `dataLayer` arriva l'evento `consenso` con `consenso_statistiche` e `consenso_marketing`, utilizzabile come attivatore in Tag Manager.
+
+Tag Manager non si carica nell'anteprima su GitHub Pages. Se nel contenitore si aggiunge o si toglie uno strumento, va aggiornata la `cookie-policy` (tabelle in `src/pages/cookie-policy.astro`) e la data in `src/lab/lib/legale.js`.
 
 ## Aggiornare le tappe
 
@@ -133,7 +140,6 @@ Stato delle tappe, sitemap, `llms.txt` e dati strutturati si calcolano alla buil
 
 ## Da sapere
 
-- **Cookie**: il sito attuale non ha un banner cookie e queste pagine fanno lo stesso. Se serve un banner o il Consent Mode, va aggiunto in `Base.astro`.
 - **Font Bukra**: il titolo della home usa Bukra, che non è su Google Fonts. Chi non ce l'ha vede Host Grotesk. Per mostrarlo a tutti serve il file `.woff2` con licenza web (istruzioni in `tour.css`, cerca "Bukra").
 - **Anteprima**: `.github/workflows/anteprima.yml` pubblica `npm run build:anteprima` su GitHub Pages a ogni modifica e una volta al giorno. Non serve per lab.rankwit.ai e si può togliere. Nell'anteprima i moduli non inviano nulla (inviano solo da lab.rankwit.ai, `localhost` e `*.pages.dev`).
 - **Video**: la sezione "Com'è andata a Firenze" usa `/assets/evento-rimini.mp4` del sito attuale, come la versione precedente.

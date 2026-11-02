@@ -65,6 +65,7 @@ ${FAQ.map((f) => `### ${f.q}\n\n${f.a.replace("con il modulo in questa pagina", 
 - [RankWit AI](https://www.rankwit.ai/it): la piattaforma per misurare la visibilità negli assistenti AI.
 - [Report a distanza](https://try.rankwit.ai/report-gratuito): per chi non vuole aspettare una tappa.
 - [LinkedIn di RankWit AI](https://www.linkedin.com/company/rankwit-ai/)
+- [Informativa sulla privacy](${SITO}/privacy/) e [cookie policy](${SITO}/cookie-policy/)
 `;
   return new Response(testo, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
 }

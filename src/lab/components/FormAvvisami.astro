@@ -4,6 +4,7 @@
    fisso: città già scelta (pagina di una tappa), altrimenti si mostra l'elenco delle città.
    pagina: da dove arriva la richiesta, finisce nei dati inviati. */
 import { TIPI, stati, oggiRoma, low } from "../lib/tour.js";
+import { u } from "../lib/url.js";
 const { p, fisso = "", pagina } = Astro.props;
 const s = stati(oggiRoma());
 ---
@@ -40,7 +41,7 @@ const s = stati(oggiRoma());
     </div>
     <div class="fld"><label for={`${p}-sito`}>Sito web <span class="opt">(facoltativo)</span></label><input id={`${p}-sito`} type="url" inputmode="url" autocomplete="url" placeholder="https://"><span class="fld-err" id={`${p}-sito-err`} hidden></span></div>
     <div class="fld"><label for={`${p}-tel`}>Telefono <span class="opt">(facoltativo)</span></label><input id={`${p}-tel`} type="tel" autocomplete="tel"></div>
-    <label class="check span2" id={`${p}-privacy-wrap`}><input id={`${p}-privacy`} type="checkbox" required><span>Ho letto l'<a href="https://lab.rankwit.ai/privacy" target="_blank" rel="noopener">informativa sulla privacy</a> e acconsento a essere contattato da RankWit per questa richiesta.</span></label>
+    <label class="check span2" id={`${p}-privacy-wrap`}><input id={`${p}-privacy`} type="checkbox" required><span>Ho letto l'<a href={u("/privacy/")} target="_blank" rel="noopener">informativa sulla privacy</a> e acconsento a essere contattato da RankWit per questa richiesta.</span></label>
   </div>
   <p class="form-alert" id={`${p}-alert`} role="alert" hidden></p>
   <div class="form-actions"><button class="btn" type="submit" id={`${p}-submit`}>Invia la richiesta <span class="arr" aria-hidden="true">→</span></button><p>Usiamo i tuoi dati solo per questa richiesta.</p></div>

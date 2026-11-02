@@ -2,6 +2,7 @@
    gli aggiornamenti legati alla data di oggi, le animazioni, il menu e l'invio dei moduli. */
 import { TAPPE, BY, MAIL, stati, oggiRoma, testiAttesa, fraseTappa, doveTappa, titoloMateriali, laTappa, esc, low } from "../lib/tour.js";
 import { MAP_W, MAP_H } from "../lib/mappa.js";
+import { avviaConsenso } from "./consenso.js";
 
 /* ---------- invio delle richieste ----------
    I due moduli (Avvisami / proponi una città, e Contatti) mandano i dati in POST, come JSON,
@@ -394,3 +395,6 @@ document.querySelectorAll('a[href="#tappa-form"]').forEach(function(a){
     if (n) setTimeout(function(){ n.focus({ preventScroll: true }); }, reduce ? 0 : 500);
   });
 });
+
+/* ---------- banner dei cookie ---------- */
+avviaConsenso();

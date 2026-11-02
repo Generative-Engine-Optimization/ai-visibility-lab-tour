@@ -1,0 +1,22 @@
+---
+/* Banner dei cookie. Compare finché il visitatore non sceglie; la scelta resta in memoria locale per 6 mesi
+   e si può cambiare da "Preferenze cookie" nel footer. Logica in src/lab/scripts/consenso.js. */
+import { u } from "../lib/url.js";
+---
+<div class="ck" id="ck" role="dialog" aria-labelledby="ck-titolo" aria-describedby="ck-testo" hidden>
+  <div class="ck-box">
+    <p class="ck-titolo" id="ck-titolo">Cookie e strumenti di misurazione</p>
+    <p class="ck-testo" id="ck-testo">Questo sito usa cookie tecnici, necessari al funzionamento, e, solo con il tuo consenso, strumenti di statistica e di marketing per capire come viene usato e misurare le campagne. Se chiudi il banner o rifiuti, restano attivi solo quelli tecnici. <a href={u("/cookie-policy/")}>Cookie policy</a> · <a href={u("/privacy/")}>Privacy</a></p>
+    <fieldset class="ck-opts" id="ck-opts" hidden>
+      <legend class="sr-only">Scegli per categoria</legend>
+      <label class="ck-opt"><input type="checkbox" checked disabled><span><b>Necessari</b><small>Sempre attivi: servono al funzionamento del sito e a ricordare questa scelta.</small></span></label>
+      <label class="ck-opt"><input type="checkbox" id="ck-stat"><span><b>Statistiche</b><small>Google Analytics e Microsoft Clarity: pagine viste, provenienza, come si usa il sito.</small></span></label>
+      <label class="ck-opt"><input type="checkbox" id="ck-mkt"><span><b>Marketing</b><small>Pixel di Meta: per misurare le campagne su Facebook e Instagram.</small></span></label>
+    </fieldset>
+    <div class="ck-acts">
+      <button type="button" class="btn btn-primary" data-ck="tutti">Accetta tutti</button>
+      <button type="button" class="btn ck-no" data-ck="nessuno">Rifiuta</button>
+      <button type="button" class="ck-link" id="ck-custom" data-ck="personalizza" aria-expanded="false" aria-controls="ck-opts">Personalizza</button>
+    </div>
+  </div>
+</div>
